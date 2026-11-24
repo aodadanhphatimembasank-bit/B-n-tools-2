@@ -1,0 +1,2411 @@
+```html
+<!DOCTYPE html>
+<html lang="vi" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAVIOUR — Power Your Digital World | Digital Tools & Bots Store</title>
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cyber: {
+              bg: '#08090D',
+              card: '#0F111A',
+              purple: '#8B5CF6',
+              cyan: '#00D4FF',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg-dark: #08090D;
+      --neon-purple: #8B5CF6;
+      --neon-cyan: #00D4FF;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08090D;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(139, 92, 246, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 212, 255, 0.6);
+    }
+
+    /* Glassmorphism & Neon Glow Effects */
+    .glass-panel {
+      background: rgba(15, 17, 26, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: linear-gradient(145deg, rgba(17, 20, 31, 0.85), rgba(10, 11, 17, 0.92));
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(0, 212, 255, 0.45);
+      box-shadow: 0 12px 40px -10px rgba(139, 92, 246, 0.25), 0 0 22px rgba(0, 212, 255, 0.14);
+      transform: translateY(-4px);
+    }
+
+    .btn-neon-primary {
+      background: linear-gradient(135deg, #8B5CF6 0%, #00D4FF 100%);
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.42);
+      transition: all 0.25s ease;
+    }
+
+    .btn-neon-primary:hover {
+      box-shadow: 0 0 36px rgba(0, 212, 255, 0.65);
+      transform: translateY(-1px);
+    }
+
+    .cyber-grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(139, 92, 246, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-view {
+      animation: fadeSlideUp 0.35s ease-out forwards;
+    }
+
+    @keyframes pulseSlow {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.85; }
+    }
+    .animate-pulse-slow {
+      animation: pulseSlow 4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col relative selection:bg-[#8B5CF6] selection:text-white">
+
+  <!-- Animated Cybernetic Particle & Grid Canvas -->
+  <canvas id="cyberCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+  <!-- Ambient Top Aura -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[920px] h-[340px] bg-gradient-to-b from-[#8B5CF6]/15 via-[#00D4FF]/5 to-transparent blur-3xl pointer-events-none z-0"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
+
+  <!-- Top System Announcement Banner -->
+  <div id="announcementBar" class="relative z-30 bg-gradient-to-r from-[#8B5CF6]/25 via-[#0e111a] to-[#00D4FF]/25 border-b border-white/10 px-4 py-2 text-center">
+    <p class="text-[11px] sm:text-xs font-mono tracking-wider text-slate-200 flex items-center justify-center gap-2 flex-wrap">
+      <span class="inline-block w-2 h-2 rounded-full bg-[#00D4FF] animate-ping"></span>
+      <span id="announcementText"></span>
+    </p>
+  </div>
+
+  <!-- ========================================================================
+       HEADER NAVIGATION
+       ======================================================================== -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#08090D]/85 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <button onclick="navigateTo('HOME')" class="inline-flex items-center gap-2.5 select-none group text-left focus:outline-none">
+        <div class="relative w-9 h-9 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-lg bg-gradient-to-tr from-[#8B5CF6] to-[#00D4FF] opacity-35 blur-md group-hover:opacity-70 transition-opacity"></div>
+          <svg viewBox="0 0 40 40" class="w-full h-full relative z-10" fill="none">
+            <defs>
+              <linearGradient id="saviourBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8B5CF6" />
+                <stop offset="100%" stop-color="#00D4FF" />
+              </linearGradient>
+            </defs>
+            <polygon points="20,2 36,11 36,29 20,38 4,29 4,11" stroke="url(#saviourBrandGrad)" stroke-width="2.2" fill="#08090D" />
+            <path d="M25 13H16.5C14.8 13 13.5 14.3 13.5 16C13.5 17.7 14.8 19 16.5 19H23.5C25.2 19 26.5 20.3 26.5 22C26.5 23.7 25.2 25 23.5 25H14.5" stroke="url(#saviourBrandGrad)" stroke-width="2.8" stroke-linecap="round" />
+            <circle cx="20" cy="7" r="1.5" fill="#00D4FF" />
+            <circle cx="20" cy="33" r="1.5" fill="#8B5CF6" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-black tracking-[0.22em] text-xl sm:text-2xl bg-gradient-to-r from-white via-[#e9d5ff] to-[#00D4FF] bg-clip-text text-transparent">
+            SAVIOUR
+          </span>
+          <span class="text-[9px] tracking-[0.32em] text-[#00D4FF]/80 font-mono uppercase -mt-1">
+            DIGITAL SYSTEMS
+          </span>
+        </div>
+      </button>
+
+      <!-- Desktop Navigation -->
+      <nav id="desktopNav" class="hidden lg:flex items-center gap-1 bg-white/[0.03] border border-white/10 rounded-full px-2 py-1.5">
+        <button data-route="HOME" onclick="navigateTo('HOME')" class="nav-btn px-4 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all">HOME</button>
+        <button data-route="PRODUCTS" onclick="navigateTo('PRODUCTS')" class="nav-btn px-4 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all">PRODUCTS</button>
+        <button onclick="openDiscordModal()" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider text-[#00D4FF] hover:bg-[#00D4FF]/10 transition-all inline-flex items-center gap-1.5">
+          <span>DISCORD</span>
+          <i data-lucide="external-link" class="w-3 h-3"></i>
+        </button>
+        <button data-route="SUPPORT" onclick="navigateTo('SUPPORT')" class="nav-btn px-4 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all">SUPPORT</button>
+      </nav>
+
+      <!-- Right Action Controls -->
+      <div class="hidden md:flex items-center gap-3">
+        <!-- Payment Gateway Honest Indicator -->
+        <div id="gatewayStatusPill" class="px-3 py-1.5 rounded-full text-[11px] font-mono border flex items-center gap-1.5"></div>
+
+        <!-- Dynamic Auth / Admin Buttons -->
+        <div id="headerAuthArea" class="flex items-center gap-2"></div>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button onclick="toggleMobileMenu()" class="lg:hidden p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-200" aria-label="Menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-[#0b0d14]/95 backdrop-blur-xl border-b border-white/10 px-4 py-4 space-y-2">
+      <button onclick="navigateTo('HOME')" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold tracking-wider text-slate-200 hover:bg-white/5">HOME</button>
+      <button onclick="navigateTo('PRODUCTS')" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold tracking-wider text-slate-200 hover:bg-white/5">PRODUCTS</button>
+      <button onclick="openDiscordModal()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold tracking-wider text-[#00D4FF] hover:bg-white/5 flex items-center justify-between">
+        <span>DISCORD COMMUNITY</span>
+        <i data-lucide="external-link" class="w-4 h-4"></i>
+      </button>
+      <button onclick="navigateTo('SUPPORT')" class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold tracking-wider text-slate-200 hover:bg-white/5">SUPPORT</button>
+      <div id="mobileAuthArea" class="pt-2 border-t border-white/10 flex flex-col gap-2"></div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN DYNAMIC CONTENT VIEWPORT
+       ======================================================================== -->
+  <main id="appViewport" class="relative z-10 flex-1"></main>
+
+  <!-- ========================================================================
+       GLOBAL MODALS (Discord, Product Detail, Admin Product Form)
+       ======================================================================== -->
+  <div id="modalOverlay" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div id="modalContent" class="w-full max-w-2xl my-8"></div>
+  </div>
+
+  <!-- ========================================================================
+       PROFESSIONAL FOOTER
+       ======================================================================== -->
+  <footer class="relative z-10 border-t border-white/10 bg-[#06070a]/95 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div class="md:col-span-2 space-y-4">
+          <div class="inline-flex items-center gap-2.5">
+            <span class="font-black tracking-[0.22em] text-2xl bg-gradient-to-r from-white via-[#e9d5ff] to-[#00D4FF] bg-clip-text text-transparent">
+              SAVIOUR
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-400 max-w-md leading-relaxed">
+            Nền tảng thương mại điện tử phần mềm kỹ thuật số độc quyền: Tool tự động hóa, Discord Bot hiệu năng cao, Script bảo mật và tiện ích tối ưu hệ thống.
+          </p>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-[11px] font-mono text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>CORE ENGINE: OPERATIONAL • LICENSE SYSTEM ACTIVE</span>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-mono font-bold uppercase tracking-widest text-white mb-4">Điều Hướng</h4>
+          <ul class="space-y-2.5 text-xs text-slate-400">
+            <li><button onclick="navigateTo('HOME')" class="hover:text-[#00D4FF] transition-colors">Trang chủ (Home)</button></li>
+            <li><button onclick="navigateTo('PRODUCTS')" class="hover:text-[#00D4FF] transition-colors">Danh mục sản phẩm</button></li>
+            <li><button onclick="navigateTo('SUPPORT')" class="hover:text-[#00D4FF] transition-colors">Hỗ trợ kỹ thuật & FAQ</button></li>
+            <li><button onclick="openDiscordModal()" class="hover:text-[#00D4FF] transition-colors">Discord Cộng Đồng</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-mono font-bold uppercase tracking-widest text-white mb-4">Khách Hàng</h4>
+          <ul class="space-y-2.5 text-xs text-slate-400">
+            <li><button onclick="navigateTo('ACCOUNT')" class="hover:text-[#00D4FF] transition-colors">Hồ sơ & Lịch sử đơn hàng</button></li>
+            <li><button onclick="navigateTo('ACCOUNT', 'LICENSES')" class="hover:text-[#00D4FF] transition-colors">Quản lý License Key</button></li>
+            <li><button onclick="navigateTo('ACCOUNT', 'DOWNLOADS')" class="hover:text-[#00D4FF] transition-colors">Trung tâm tải xuống</button></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>© 2026 SAVIOUR DIGITAL SYSTEMS. All rights reserved.</p>
+        <p class="font-mono text-[11px]">DARK FUTURISTIC ARCHITECTURE • #08090D / #8B5CF6 / #00D4FF</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       JAVASCRIPT APPLICATION CORE (Database, Auth, Store, Checkout, Admin)
+       ======================================================================== -->
+  <script>
+    // ==========================================================================
+    // 1. INITIAL SEED DATA (Authentic Software Catalog - Zero Fake Orders/Sales)
+    // ==========================================================================
+    const SEED_PRODUCTS = [
+      {
+        id: 'prod_warden_bot',
+        name: 'SAVIOUR Warden — Anti-Raid & Auto-Mod Bot',
+        category: 'DISCORD BOT',
+        badge: 'BEST SELLER',
+        status: 'ACTIVE',
+        price: 350000,
+        version: 'v3.4.2',
+        artType: 'bot',
+        shortDesc: 'Bot bảo vệ Server Discord đa tầng: Anti-Raid, Anti-Nuke, tự động gắn Tag VIP, Ticket hỗ trợ và xác thực License Key độ trễ < 25ms.',
+        fullDesc: 'SAVIOUR Warden được xây dựng trên nền tảng Node.js & Discord.js v14 tối ưu hiệu năng cao. Tích hợp thuật toán phát hiện đột kích hàng loạt, tự động cách ly tài khoản nghi vấn, quản lý phân quyền thông minh và hệ thống ghi nhật ký Webhook chi tiết.',
+        features: [
+          'Anti-Nuke & Anti-Raid thời gian thực với cơ chế khóa kênh khẩn cấp',
+          'Hệ thống Verification Captcha ảnh chống tài khoản Clone / Spam Token',
+          'Tự động gắn Tag, cấp Role VIP và đồng bộ trạng thái khách hàng',
+          'Hệ thống Ticket đa danh mục kèm xuất bản lưu lịch sử HTML',
+          'Hỗ trợ Slash Commands mượt mà & tùy biến cấu hình qua file JSON/ENV'
+        ],
+        usageGuide: [
+          'Tải gói mã nguồn & cấu hình sau khi đơn hàng được xác nhận PAID.',
+          'Cài đặt Node.js v20+ trên VPS Linux/Windows.',
+          'Điền DISCORD_TOKEN, CLIENT_ID và mã bản quyền Key_XXXXX vào file .env.',
+          'Chạy lệnh `npm install && npm run start` để khởi động Bot.'
+        ],
+        techStack: ['TypeScript', 'Discord.js v14', 'Redis', 'Node.js'],
+        changelog: 'v3.4.2: Tối ưu tốc độ phản hồi Slash Command, nâng cấp bộ lọc Anti-Phishing.'
+      },
+      {
+        id: 'prod_hyper_cli',
+        name: 'SAVIOUR HyperCLI — Termux & Linux Multi-Tool',
+        category: 'TOOL',
+        badge: 'HOT',
+        status: 'ACTIVE',
+        price: 250000,
+        version: 'v2.8.0',
+        artType: 'terminal',
+        shortDesc: 'Bộ công cụ dòng lệnh tối ưu cho Termux (Android) & Linux VPS: kiểm tra Proxy đa luồng, giám sát tài nguyên và tự động hóa tác vụ mạng.',
+        fullDesc: 'Thiết kế gọn nhẹ, không ngốn RAM, SAVIOUR HyperCLI mang đến trải nghiệm điều khiển dòng lệnh trực quan trên cả điện thoại Android (Termux) lẫn máy chủ Ubuntu/Debian. Hỗ trợ xử lý bất đồng bộ hàng trăm luồng tác vụ và xuất báo cáo tức thì.',
+        features: [
+          'Kiến trúc AsyncIO siêu nhẹ, hoạt động mượt mà trên Termux Android 12–15',
+          'Trình kiểm tra & lọc Proxy HTTP/SOCKS5 tốc độ cao theo độ trễ (ms)',
+          'Tự động lưu phiên làm việc và khôi phục trạng thái khi rớt mạng',
+          'Bảo mật bản quyền bằng License Key + ràng buộc thiết bị HWID',
+          'Tích hợp trình cập nhật phiên bản trực tiếp qua dòng lệnh'
+        ],
+        usageGuide: [
+          'Mở Termux và cập nhật gói: `pkg update && pkg upgrade -y && pkg install python git`.',
+          'Tải gói cài đặt trong mục Trung Tâm Tải Xuống sau khi đơn hàng PAID.',
+          'Giải nén, chạy `pip install -r requirements.txt` và `python main.py`.',
+          'Nhập mã bản quyền định dạng Key_XXXXX để kích hoạt công cụ.'
+        ],
+        techStack: ['Python 3.11', 'AsyncIO', 'Rich TUI', 'Termux'],
+        changelog: 'v2.8.0: Giảm 35% mức tiêu thụ bộ nhớ trên thiết bị di động.'
+      },
+      {
+        id: 'prod_flow_engine',
+        name: 'SAVIOUR FlowEngine — Browser & Cookie Automation',
+        category: 'AUTOMATION',
+        badge: 'NEW',
+        status: 'ACTIVE',
+        price: 490000,
+        version: 'v1.9.5',
+        artType: 'automation',
+        shortDesc: 'Nền tảng tự động hóa trình duyệt chống phát hiện vân tay, quản lý đa phiên Cookie/Token và chạy kịch bản tương tác thông minh.',
+        fullDesc: 'SAVIOUR FlowEngine giúp tự động hóa các quy trình thao tác lặp lại trên nền tảng web một cách an toàn. Tích hợp mô phỏng chuyển động chuột tự nhiên, cô lập Profile trình duyệt độc lập và hỗ trợ gán Proxy riêng cho từng luồng chạy.',
+        features: [
+          'Mô phỏng hành vi tương tác người dùng thật với độ trễ ngẫu nhiên thông minh',
+          'Quản lý đa phiên Cookie / Token mã hóa AES-256 cục bộ an toàn',
+          'Gán Proxy HTTP/SOCKS5 riêng biệt cho từng luồng trình duyệt',
+          'Trình thiết lập kịch bản tự động linh hoạt, dễ dàng tùy chỉnh',
+          'Tự động tạm nghỉ thông minh khi gặp giới hạn tần suất (Rate-limit)'
+        ],
+        usageGuide: [
+          'Tải bộ cài đặt SAVIOUR FlowEngine cho Windows 10/11 (64-bit).',
+          'Khởi chạy phần mềm và nhập License Key được cấp trong hồ sơ.',
+          'Import danh sách Profile / Cookie và cấu hình Proxy tương ứng.',
+          'Chọn kịch bản tự động hóa và nhấn Start để theo dõi nhật ký chạy.'
+        ],
+        techStack: ['Node.js', 'Playwright', 'Chromium Core', 'AES-256'],
+        changelog: 'v1.9.5: Nâng cấp nhân Chromium mới nhất và tối ưu bộ quản lý Cookie.'
+      },
+      {
+        id: 'prod_shield_sdk',
+        name: 'SAVIOUR ShieldAuth — Software Licensing Script & SDK',
+        category: 'SCRIPT',
+        badge: 'NEW',
+        status: 'ACTIVE',
+        price: 390000,
+        version: 'v4.1.0',
+        artType: 'security',
+        shortDesc: 'Bộ Script & SDK bảo vệ bản quyền phần mềm cho Developer: khóa HWID, chống Debug/Dump bộ nhớ, mã hóa API RSA-4096.',
+        fullDesc: 'Giải pháp toàn diện giúp lập trình viên thương mại hóa Tool/Script an toàn. Hỗ trợ tích hợp nhanh vào Python, Node.js và C# với cơ chế xác thực License Key, khóa mã phần cứng HWID và kiểm tra tính toàn vẹn của tệp thực thi.',
+        features: [
+          'Mã hóa giao tiếp Client-Server chuẩn RSA-4096 + HMAC-SHA256',
+          'Khóa thiết bị theo HWID phần cứng, hỗ trợ Reset HWID từ trang quản trị',
+          'Tích hợp cơ chế phát hiện trình gỡ lỗi (Anti-Debug) và giả lập (Anti-VM)',
+          'Kèm sẵn mẫu mã nguồn tích hợp cho Python, TypeScript và C# .NET',
+          'Dễ dàng triển khai trên VPS riêng với chi phí vận hành tối thiểu'
+        ],
+        usageGuide: [
+          'Tải gói SDK & Script mẫu sau khi hoàn tất thanh toán.',
+          'Import thư viện `saviour_auth` vào dự án phần mềm của bạn.',
+          'Cấu hình Endpoint xác thực và Public Key.',
+          'Gọi hàm kiểm tra bản quyền trước khi khởi chạy luồng chức năng chính.'
+        ],
+        techStack: ['Python', 'TypeScript', 'C# .NET', 'RSA-4096'],
+        changelog: 'v4.1.0: Bổ sung kiểm tra chữ ký số thời gian thực cho Python 3.12.'
+      },
+      {
+        id: 'prod_nexus_util',
+        name: 'SAVIOUR Nexus — Low-Latency Macro & System Utility',
+        category: 'UTILITIES',
+        badge: 'HOT',
+        status: 'ACTIVE',
+        price: 190000,
+        version: 'v2.2.1',
+        artType: 'utility',
+        shortDesc: 'Tiện ích tối ưu hóa độ trễ hệ thống Windows, giải phóng RAM thông minh và bộ thực thi Macro phím/chuột độ chính xác 1ms.',
+        fullDesc: 'SAVIOUR Nexus chạy nền siêu nhẹ (< 15MB RAM), giúp dọn dẹp bộ nhớ đệm tự động không gây giật lag, đồng thời cung cấp trình ghi và phát lại tổ hợp thao tác Macro với độ chính xác từng mili-giây.',
+        features: [
+          'Bộ định thời thực thi Macro độ chính xác cao 1ms, hỗ trợ vòng lặp tùy biến',
+          'Tối ưu hóa RAM (Standby List Cleaner) tự động theo ngưỡng cài đặt',
+          'Chuyển đổi nhanh các Profile cấu hình bằng phím tắt toàn cục',
+          'Bảng hiển thị thông số FPS, CPU, RAM tối giản chuẩn Cyberpunk',
+          'Không xung đột driver, tương thích hoàn hảo Windows 10 & Windows 11'
+        ],
+        usageGuide: [
+          'Tải tệp cài đặt SAVIOUR Nexus sau khi đơn hàng chuyển sang PAID.',
+          'Mở ứng dụng với quyền Administrator để kích hoạt bộ định thời chuẩn xác.',
+          'Nhập License Key để mở khóa toàn bộ tính năng Macro & System Optimizer.'
+        ],
+        techStack: ['C++20', 'Win32 API', 'Direct2D', 'Rust Core'],
+        changelog: 'v2.2.1: Cải thiện độ mượt của giao diện Overlay và hỗ trợ bàn phím 65%.'
+      }
+    ];
+
+    const SEED_USERS = [
+      {
+        id: 'usr_admin_root',
+        username: 'saviour_admin',
+        email: 'admin@saviour.vn',
+        password: 'admin123',
+        role: 'ADMIN',
+        createdAt: '2026-01-01T08:00:00Z'
+      },
+      {
+        id: 'usr_customer_demo',
+        username: 'cyber_member',
+        email: 'user@saviour.vn',
+        password: 'user123',
+        role: 'USER',
+        createdAt: '2026-02-15T10:30:00Z'
+      }
+    ];
+
+    const SEED_CONFIG = {
+      announcementText: 'SAVIOUR DIGITAL STORE v3.0 — CỔNG THANH TOÁN TỰ ĐỘNG: CHƯA KẾT NỐI API (ĐANG ÁP DỤNG XÁC NHẬN THỦ CÔNG MINH BẠCH)',
+      gatewayConnected: false,
+      bankName: 'MB BANK (Ngân hàng Quân Đội)',
+      bankAccount: 'CHƯA CẤU HÌNH STK (Cập nhật tại Admin -> Cấu hình)',
+      bankOwner: 'SAVIOUR DIGITAL STUDIO',
+      momoPhone: 'CHƯA CẤU HÌNH SĐT MOMO',
+      discordUrl: 'https://discord.gg/saviour-digital'
+    };
+
+    // ==========================================================================
+    // 2. RELATIONAL LOCALSTORAGE DATABASE STATE
+    // ==========================================================================
+    const DB = {
+      get(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+          return fallback;
+        }
+      },
+      set(key, val) {
+        localStorage.setItem(key, JSON.stringify(val));
+      }
+    };
+
+    let state = {
+      products: DB.get('saviour_html_products', SEED_PRODUCTS),
+      users: DB.get('saviour_html_users', SEED_USERS),
+      orders: DB.get('saviour_html_orders', []),
+      licenses: DB.get('saviour_html_licenses', []),
+      tickets: DB.get('saviour_html_tickets', []),
+      config: DB.get('saviour_html_config', SEED_CONFIG),
+      currentUserId: localStorage.getItem('saviour_html_uid') || null,
+      route: 'HOME',
+      selectedProductId: null,
+      checkoutMethod: 'VIETQR_BANK',
+      accountTab: 'ORDERS',
+      adminTab: 'DASHBOARD',
+      searchQuery: '',
+      categoryFilter: 'ALL',
+      badgeFilter: 'ALL',
+      pendingCheckoutProductId: null
+    };
+
+    function saveAll() {
+      DB.set('saviour_html_products', state.products);
+      DB.set('saviour_html_users', state.users);
+      DB.set('saviour_html_orders', state.orders);
+      DB.set('saviour_html_licenses', state.licenses);
+      DB.set('saviour_html_tickets', state.tickets);
+      DB.set('saviour_html_config', state.config);
+      if (state.currentUserId) {
+        localStorage.setItem('saviour_html_uid', state.currentUserId);
+      } else {
+        localStorage.removeItem('saviour_html_uid');
+      }
+    }
+
+    function getCurrentUser() {
+      return state.users.find(u => u.id === state.currentUserId) || null;
+    }
+
+    // ==========================================================================
+    // 3. UTILITIES (Formatting, Key Generator, Toast, Clipboard)
+    // ==========================================================================
+    function formatVND(amount) {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    function generateLicenseKey() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const part = (len) => Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      return `Key_${part(6)}-${part(5)}`;
+    }
+
+    function generateOrderId() {
+      const rand = Math.floor(100000 + Math.random() * 900000);
+      return `ORD-${new Date().getFullYear()}-${rand}`;
+    }
+
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showToast(type, title, message) {
+      const container = document.getElementById('toastContainer');
+      const id = 'toast_' + Date.now() + Math.random();
+      const colors = {
+        success: 'border-emerald-500/40 text-emerald-400',
+        error: 'border-rose-500/40 text-rose-400',
+        warning: 'border-amber-500/40 text-amber-300',
+        info: 'border-[#00D4FF]/40 text-[#00D4FF]'
+      };
+      const icons = {
+        success: 'check-circle-2',
+        error: 'x-circle',
+        warning: 'alert-triangle',
+        info: 'sparkles'
+      };
+
+      const el = document.createElement('div');
+      el.id = id;
+      el.className = `pointer-events-auto glass-panel rounded-xl p-4 shadow-[0_10px_35px_rgba(0,0,0,0.75)] flex items-start gap-3 border ${colors[type] || colors.info} animate-view`;
+      el.innerHTML = `
+        <i data-lucide="${icons[type] || 'info'}" class="w-5 h-5 shrink-0 mt-0.5"></i>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-bold text-white">${escapeHTML(title)}</p>
+          <p class="text-xs text-slate-300 mt-0.5 leading-relaxed">${escapeHTML(message)}</p>
+        </div>
+      `;
+      container.appendChild(el);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        const target = document.getElementById(id);
+        if (target) {
+          target.style.opacity = '0';
+          target.style.transform = 'translateY(8px)';
+          target.style.transition = 'all 0.25s ease';
+          setTimeout(() => target.remove(), 250);
+        }
+      }, 4200);
+    }
+
+    function copyToClipboard(text, label = 'Nội dung') {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('info', 'Đã sao chép', `${label}: "${text}" đã được lưu vào bộ nhớ tạm.`);
+    }
+
+    // ==========================================================================
+    // 4. SVG ARTWORK GENERATOR FOR PRODUCTS
+    // ==========================================================================
+    function renderProductArtwork(artType, category, version, heightClass = 'h-44') {
+      let svgIcon = '';
+      if (artType === 'bot') {
+        svgIcon = `
+          <svg viewBox="0 0 120 90" class="w-28 h-24 drop-shadow-[0_0_15px_rgba(0,212,255,0.45)]">
+            <rect x="26" y="20" width="68" height="48" rx="12" fill="#0d101b" stroke="#00D4FF" stroke-width="2.2" />
+            <line x1="60" y1="8" x2="60" y2="20" stroke="#8B5CF6" stroke-width="2.5" />
+            <circle cx="60" cy="7" r="4" fill="#8B5CF6" />
+            <circle cx="45" cy="42" r="6" fill="#00D4FF" />
+            <circle cx="75" cy="42" r="6" fill="#00D4FF" />
+            <path d="M44 56 Q60 63 76 56" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round" fill="none" />
+            <rect x="16" y="34" width="6" height="20" rx="3" fill="#8B5CF6" />
+            <rect x="98" y="34" width="6" height="20" rx="3" fill="#8B5CF6" />
+          </svg>`;
+      } else if (artType === 'terminal') {
+        svgIcon = `
+          <svg viewBox="0 0 120 90" class="w-28 h-24 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">
+            <rect x="16" y="14" width="88" height="62" rx="8" fill="#0d101b" stroke="#8B5CF6" stroke-width="2.2" />
+            <line x1="16" y1="28" x2="104" y2="28" stroke="#8B5CF6" stroke-opacity="0.5" stroke-width="1.5" />
+            <circle cx="25" cy="21" r="2.2" fill="#ff5f56" />
+            <circle cx="33" cy="21" r="2.2" fill="#ffbd2e" />
+            <circle cx="41" cy="21" r="2.2" fill="#27c93f" />
+            <path d="M28 42 L38 49 L28 56" stroke="#00D4FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            <line x1="44" y1="56" x2="66" y2="56" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round" />
+            <line x1="28" y1="65" x2="84" y2="65" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2" stroke-linecap="round" />
+          </svg>`;
+      } else if (artType === 'automation') {
+        svgIcon = `
+          <svg viewBox="0 0 120 90" class="w-28 h-24 drop-shadow-[0_0_15px_rgba(0,212,255,0.45)]">
+            <rect x="14" y="32" width="24" height="24" rx="6" fill="#0d101b" stroke="#8B5CF6" stroke-width="2.2" />
+            <rect x="48" y="14" width="24" height="24" rx="6" fill="#0d101b" stroke="#00D4FF" stroke-width="2.2" />
+            <rect x="48" y="52" width="24" height="24" rx="6" fill="#0d101b" stroke="#00D4FF" stroke-width="2.2" />
+            <rect x="82" y="32" width="24" height="24" rx="6" fill="#0d101b" stroke="#8B5CF6" stroke-width="2.2" />
+            <path d="M38 44 L48 26 M38 44 L48 64 M72 26 L82 44 M72 64 L82 44" stroke="#00D4FF" stroke-width="1.8" />
+            <circle cx="60" cy="26" r="3" fill="#00D4FF" />
+            <circle cx="60" cy="64" r="3" fill="#8B5CF6" />
+          </svg>`;
+      } else if (artType === 'security') {
+        svgIcon = `
+          <svg viewBox="0 0 120 90" class="w-28 h-24 drop-shadow-[0_0_15px_rgba(139,92,246,0.5)]">
+            <path d="M60 12 L92 24 V46 C92 65 78 77 60 82 C42 77 28 65 28 46 V24 L60 12 Z" fill="#0d101b" stroke="#8B5CF6" stroke-width="2.4" />
+            <rect x="49" y="42" width="22" height="17" rx="3" fill="#8B5CF6" fill-opacity="0.25" stroke="#00D4FF" stroke-width="2" />
+            <path d="M54 42 V36 C54 32.5 66 32.5 66 36 V42" stroke="#00D4FF" stroke-width="2" fill="none" />
+            <circle cx="60" cy="50" r="2" fill="#00D4FF" />
+          </svg>`;
+      } else {
+        svgIcon = `
+          <svg viewBox="0 0 120 90" class="w-28 h-24 drop-shadow-[0_0_15px_rgba(0,212,255,0.45)]">
+            <circle cx="60" cy="45" r="28" fill="#0d101b" stroke="#8B5CF6" stroke-width="2.2" stroke-dasharray="6 4" />
+            <circle cx="60" cy="45" r="18" fill="none" stroke="#00D4FF" stroke-width="2" />
+            <path d="M62 31 L52 46 H61 L58 59 L69 44 H60 L62 31 Z" fill="#00D4FF" />
+          </svg>`;
+      }
+
+      return `
+        <div class="relative w-full ${heightClass} overflow-hidden rounded-t-2xl bg-[#07080c] border-b border-white/10 flex items-center justify-center cyber-grid-bg">
+          <div class="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-[#8B5CF6]/20 blur-3xl"></div>
+          <div class="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-[#00D4FF]/20 blur-3xl"></div>
+          <div class="relative z-10 flex flex-col items-center justify-center p-4">
+            ${svgIcon}
+            <div class="mt-2 flex items-center gap-2">
+              <span class="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider rounded bg-white/5 border border-white/10 text-[#00D4FF]">${escapeHTML(category)}</span>
+              <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-[#8B5CF6]/15 border border-[#8B5CF6]/40 text-[#c4b5fd]">${escapeHTML(version)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBadgeHTML(badge) {
+      if (!badge || badge === 'NONE') return '';
+      const map = {
+        'NEW': 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/40 shadow-[0_0_12px_rgba(0,212,255,0.25)]',
+        'HOT': 'bg-rose-500/15 text-rose-400 border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.25)]',
+        'BEST SELLER': 'bg-[#8B5CF6]/20 text-[#c4b5fd] border-[#8B5CF6]/50 shadow-[0_0_12px_rgba(139,92,246,0.3)]'
+      };
+      return `<span class="px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-full border ${map[badge] || ''}">${escapeHTML(badge)}</span>`;
+    }
+
+    function renderOrderStatusHTML(status) {
+      if (status === 'PAID') {
+        return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> PAID</span>`;
+      }
+      if (status === 'CANCELLED') {
+        return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> CANCELLED</span>`;
+      }
+      return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30"><i data-lucide="clock" class="w-3.5 h-3.5"></i> PENDING</span>`;
+    }
+
+    // ==========================================================================
+    // 5. NAVIGATION & HEADER SYNC
+    // ==========================================================================
+    function navigateTo(route, param = null) {
+      state.route = route;
+      if (route === 'PRODUCT_DETAIL' || route === 'CHECKOUT') {
+        if (param) state.selectedProductId = param;
+      }
+      if (route === 'ACCOUNT' && param) {
+        state.accountTab = param;
+      }
+      if (route === 'ADMIN' && param) {
+        state.adminTab = param;
+      }
+      document.getElementById('mobileMenu').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      renderApp();
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    function updateHeaderUI() {
+      // Announcement bar
+      document.getElementById('announcementText').textContent = state.config.announcementText;
+
+      // Active Nav Pill
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const r = btn.getAttribute('data-route');
+        if (r === state.route) {
+          btn.className = 'nav-btn px-4 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all bg-gradient-to-r from-[#8B5CF6] to-[#00D4FF] text-white shadow-[0_0_20px_rgba(139,92,246,0.45)]';
+        } else {
+          btn.className = 'nav-btn px-4 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all text-slate-300 hover:text-white hover:bg-white/5';
+        }
+      });
+
+      // Gateway Connection Pill
+      const gwPill = document.getElementById('gatewayStatusPill');
+      if (state.config.gatewayConnected) {
+        gwPill.className = 'px-3 py-1.5 rounded-full text-[11px] font-mono border flex items-center gap-1.5 bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
+        gwPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>AUTO-PAY: CONNECTED</span>`;
+      } else {
+        gwPill.className = 'px-3 py-1.5 rounded-full text-[11px] font-mono border flex items-center gap-1.5 bg-amber-500/10 border-amber-500/30 text-amber-300';
+        gwPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span>GATEWAY: MANUAL</span>`;
+      }
+
+      // Header Auth Area
+      const user = getCurrentUser();
+      const desktopAuth = document.getElementById('headerAuthArea');
+      const mobileAuth = document.getElementById('mobileAuthArea');
+
+      if (!user) {
+        desktopAuth.innerHTML = `
+          <button onclick="navigateTo('ACCOUNT')" class="btn-neon-primary px-5 py-2 rounded-xl text-xs font-bold tracking-wider uppercase text-white flex items-center gap-2">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+            <span>LOGIN</span>
+          </button>
+        `;
+        mobileAuth.innerHTML = `
+          <button onclick="navigateTo('ACCOUNT')" class="btn-neon-primary w-full py-3 rounded-xl text-sm font-bold text-white">LOGIN / ĐĂNG KÝ</button>
+        `;
+      } else {
+        const adminBtnDesktop = user.role === 'ADMIN'
+          ? `<button onclick="navigateTo('ADMIN')" class="px-3.5 py-2 rounded-xl text-xs font-bold tracking-wider border transition-all flex items-center gap-1.5 ${state.route === 'ADMIN' ? 'bg-[#8B5CF6] text-white border-[#8B5CF6]' : 'bg-[#8B5CF6]/15 text-[#c4b5fd] border-[#8B5CF6]/40 hover:bg-[#8B5CF6]/25'}">
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <span>ADMIN</span>
+            </button>`
+          : '';
+
+        desktopAuth.innerHTML = `
+          ${adminBtnDesktop}
+          <button onclick="navigateTo('ACCOUNT')" class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-2 ${state.route === 'ACCOUNT' ? 'bg-[#00D4FF]/20 text-white border-[#00D4FF]/50' : 'bg-white/5 text-slate-200 border-white/10 hover:border-[#00D4FF]/40'}">
+            <i data-lucide="user" class="w-3.5 h-3.5 text-[#00D4FF]"></i>
+            <span>${escapeHTML(user.username)}</span>
+          </button>
+        `;
+
+        const adminBtnMobile = user.role === 'ADMIN'
+          ? `<button onclick="navigateTo('ADMIN')" class="w-full py-3 px-4 rounded-xl bg-[#8B5CF6] text-sm font-bold text-white flex items-center justify-between">
+              <span>ADMIN DASHBOARD</span>
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            </button>`
+          : '';
+
+        mobileAuth.innerHTML = `
+          <button onclick="navigateTo('ACCOUNT')" class="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-sm font-bold text-white flex items-center justify-between">
+            <span>Tài khoản: ${escapeHTML(user.username)}</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-[#00D4FF]"></i>
+          </button>
+          ${adminBtnMobile}
+        `;
+      }
+    }
+
+    // ==========================================================================
+    // 6. VIEW RENDERERS (HOME, PRODUCTS, DETAIL, CHECKOUT, ACCOUNT, ADMIN, SUPPORT)
+    // ==========================================================================
+
+    // --- VIEW 1: HOME ---
+    function renderHomeView() {
+      const paidOrders = state.orders.filter(o => o.status === 'PAID');
+      const pendingOrders = state.orders.filter(o => o.status === 'PENDING');
+      const featured = state.products.slice(0, 3);
+
+      return `
+        <div class="animate-view">
+          <!-- Hero Section -->
+          <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8B5CF6]/10 border border-[#8B5CF6]/35 text-xs font-mono text-[#c4b5fd] mb-8 shadow-[0_0_25px_rgba(139,92,246,0.2)]">
+              <i data-lucide="cpu" class="w-3.5 h-3.5 text-[#00D4FF]"></i>
+              <span>NEXT-GEN SOFTWARE ENGINEERING • SAVIOUR STUDIO</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] max-w-5xl mx-auto">
+              POWER YOUR
+              <span class="bg-gradient-to-r from-[#8B5CF6] via-[#a78bfa] to-[#00D4FF] bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(139,92,246,0.35)]">
+                DIGITAL WORLD
+              </span>
+            </h1>
+
+            <p class="mt-6 text-base sm:text-xl text-slate-300 max-w-2xl mx-auto font-light tracking-wide">
+              Premium Tools. Powerful Bots. Built Beyond Limits.
+            </p>
+            <p class="mt-3 text-xs sm:text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
+              Hệ sinh thái phần mềm tự động hóa, Discord Bot hiệu năng cao, Script bảo mật và tiện ích tối ưu hệ thống được phát triển độc quyền bởi SAVIOUR.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button onclick="navigateTo('PRODUCTS')" class="btn-neon-primary w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-sm tracking-wider uppercase text-white flex items-center justify-center gap-2.5">
+                <span>EXPLORE PRODUCTS</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+
+              <button onclick="openDiscordModal()" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-sm tracking-wider uppercase bg-[#0f111a]/80 backdrop-blur-md border border-[#00D4FF]/40 text-[#00D4FF] hover:bg-[#00D4FF]/10 hover:border-[#00D4FF] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5">
+                <i data-lucide="message-square" class="w-4 h-4"></i>
+                <span>JOIN DISCORD</span>
+              </button>
+            </div>
+
+            <!-- Real-Time Computed System Statistics -->
+            <div class="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              <div class="glass-panel rounded-2xl p-6 hover:border-[#8B5CF6]/50 transition-all">
+                <div class="text-xs font-mono uppercase tracking-widest text-slate-400">SẢN PHẨM PHÁT HÀNH</div>
+                <div class="mt-2 text-3xl sm:text-4xl font-black text-white">${state.products.length}</div>
+                <div class="mt-1 text-[11px] text-[#00D4FF] font-mono">Dữ liệu thực tế từ kho</div>
+              </div>
+
+              <div class="glass-panel rounded-2xl p-6 hover:border-[#00D4FF]/50 transition-all">
+                <div class="text-xs font-mono uppercase tracking-widest text-slate-400">TÀI KHOẢN THÀNH VIÊN</div>
+                <div class="mt-2 text-3xl sm:text-4xl font-black text-white">${state.users.length}</div>
+                <div class="mt-1 text-[11px] text-[#c4b5fd] font-mono">Đã đăng ký trên hệ thống</div>
+              </div>
+
+              <div class="glass-panel rounded-2xl p-6 hover:border-[#8B5CF6]/50 transition-all">
+                <div class="text-xs font-mono uppercase tracking-widest text-slate-400">GIAO DỊCH HOÀN TẤT (PAID)</div>
+                <div class="mt-2 text-3xl sm:text-4xl font-black text-white">${paidOrders.length}</div>
+                <div class="mt-1 text-[11px] text-emerald-400 font-mono">
+                  ${pendingOrders.length > 0 ? `+${pendingOrders.length} đơn đang chờ xác nhận` : 'Thống kê minh bạch 100%'}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Featured Products Section -->
+          <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-white/5">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+              <div>
+                <span class="text-xs font-mono uppercase tracking-[0.25em] text-[#00D4FF]">// FEATURED RELEASES</span>
+                <h2 class="mt-2 text-2xl sm:text-4xl font-black text-white">Sản Phẩm Kỹ Thuật Số Nổi Bật</h2>
+              </div>
+              <button onclick="navigateTo('PRODUCTS')" class="inline-flex items-center gap-2 text-sm font-bold text-[#c4b5fd] hover:text-[#00D4FF] transition-colors">
+                <span>Xem toàn bộ danh mục</span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${featured.map(p => renderProductCardHTML(p)).join('')}
+            </div>
+          </section>
+
+          <!-- Brand Philosophy Section -->
+          <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-white/5">
+            <div class="glass-panel rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+              <div class="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-[#8B5CF6]/15 blur-3xl pointer-events-none"></div>
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                <div class="lg:col-span-7 space-y-5">
+                  <span class="text-xs font-mono uppercase tracking-[0.25em] text-[#8B5CF6]">// ABOUT SAVIOUR</span>
+                  <h2 class="text-3xl sm:text-4xl font-black text-white leading-tight">
+                    Công nghệ thực chiến. <span class="text-[#00D4FF]">Vận hành minh bạch.</span>
+                  </h2>
+                  <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Mỗi công cụ, bot và script mang thương hiệu SAVIOUR đều được tối ưu hóa hiệu năng ở cấp độ thấp, tích hợp bảo mật bản quyền License Key + HWID và hỗ trợ đa nền tảng từ Termux di động đến máy chủ Linux/Windows.
+                  </p>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div class="p-4 rounded-2xl bg-white/[0.03] border border-white/10">
+                      <i data-lucide="shield-check" class="w-6 h-6 text-[#8B5CF6] mb-2"></i>
+                      <h4 class="font-bold text-white text-sm">Bảo mật License Key_XXXXX</h4>
+                      <p class="text-xs text-slate-400 mt-1">Cấp phát tự động ngay sau khi giao dịch được xác nhận PAID.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-white/[0.03] border border-white/10">
+                      <i data-lucide="zap" class="w-6 h-6 text-[#00D4FF] mb-2"></i>
+                      <h4 class="font-bold text-white text-sm">Hiệu năng & Độ ổn định cao</h4>
+                      <p class="text-xs text-slate-400 mt-1">Kiến trúc bất đồng bộ, độ trễ thấp, cập nhật tính năng liên tục.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-5">
+                  <div class="rounded-2xl bg-[#07080c] border border-white/10 p-5 font-mono text-xs text-slate-300 shadow-2xl">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                      </div>
+                      <span class="text-[10px] text-slate-500">saviour-license-verify.js</span>
+                    </div>
+                    <pre class="overflow-x-auto leading-relaxed text-[11px] sm:text-xs"><code><span class="text-[#8B5CF6]">const</span> client = <span class="text-[#00D4FF]">await</span> SaviourAuth.connect({
+  brand: <span class="text-emerald-400">"SAVIOUR"</span>,
+  licenseKey: <span class="text-amber-300">"Key_A9F2X8-91K4M"</span>,
+  hwidLock: <span class="text-[#8B5CF6]">true</span>
+});
+
+<span class="text-slate-500">// Verified runtime integrity</span>
+console.log(client.status); <span class="text-emerald-400">// "ACTIVE_LIFETIME"</span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function renderProductCardHTML(product) {
+      return `
+        <div class="glass-card rounded-2xl overflow-hidden flex flex-col">
+          <div class="relative">
+            ${renderProductArtwork(product.artType, product.category, product.version, 'h-44')}
+            <div class="absolute top-3 left-3 flex items-center gap-2">
+              ${renderBadgeHTML(product.badge)}
+            </div>
+            <div class="absolute top-3 right-3">
+              <span class="px-2 py-0.5 text-[10px] font-mono rounded border ${product.status === 'ACTIVE' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/15 text-amber-300 border-amber-500/30'}">
+                ${escapeHTML(product.status)}
+              </span>
+            </div>
+          </div>
+
+          <div class="p-6 flex-1 flex flex-col">
+            <h3 class="text-lg font-bold text-white hover:text-[#00D4FF] transition-colors line-clamp-1">
+              ${escapeHTML(product.name)}
+            </h3>
+            <p class="mt-2 text-xs sm:text-sm text-slate-400 line-clamp-2 leading-relaxed flex-1">
+              ${escapeHTML(product.shortDesc)}
+            </p>
+
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              ${(product.techStack || []).map(t => `<span class="px-2 py-0.5 text-[10px] font-mono rounded bg-white/5 text-slate-300 border border-white/10">${escapeHTML(t)}</span>`).join('')}
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+              <div>
+                <span class="text-[10px] uppercase font-mono text-slate-500 block">Bản quyền vĩnh viễn</span>
+                <span class="text-lg font-black text-white">${formatVND(product.price)}</span>
+              </div>
+              <button onclick="navigateTo('PRODUCT_DETAIL', '${product.id}')" class="px-4 py-2.5 rounded-xl text-xs font-bold tracking-wider uppercase bg-white/5 hover:bg-gradient-to-r hover:from-[#8B5CF6] hover:to-[#00D4FF] text-white border border-white/10 hover:border-transparent transition-all">
+                Xem chi tiết
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- VIEW 2: PRODUCTS CATALOG ---
+    function renderProductsView() {
+      const categories = ['ALL', 'TOOL', 'DISCORD BOT', 'SCRIPT', 'AUTOMATION', 'UTILITIES'];
+      const filtered = state.products.filter(p => {
+        const matchCat = state.categoryFilter === 'ALL' || p.category === state.categoryFilter;
+        const matchBadge = state.badgeFilter === 'ALL' || p.badge === state.badgeFilter;
+        const q = state.searchQuery.trim().toLowerCase();
+        const matchQuery = !q || p.name.toLowerCase().includes(q) || p.shortDesc.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+        return matchCat && matchBadge && matchQuery;
+      });
+
+      return `
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-view">
+          <div class="mb-10">
+            <span class="text-xs font-mono uppercase tracking-[0.25em] text-[#00D4FF]">// DIGITAL ARSENAL</span>
+            <h1 class="mt-2 text-3xl sm:text-5xl font-black text-white">Kho Sản Phẩm Kỹ Thuật Số</h1>
+            <p class="mt-2 text-sm text-slate-400">Lọc theo phân loại công cụ, từ khóa hoặc nhãn nổi bật để tìm giải pháp phù hợp.</p>
+          </div>
+
+          <!-- Search & Filter Controls -->
+          <div class="glass-panel rounded-2xl p-4 sm:p-5 mb-8 space-y-4">
+            <div class="flex flex-col md:flex-row gap-4">
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                <input type="text" value="${escapeHTML(state.searchQuery)}" oninput="handleProductSearch(this.value)" placeholder="Tìm kiếm Tool, Discord Bot, Script, Automation..." class="w-full pl-11 pr-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00D4FF]" />
+              </div>
+
+              <div class="flex items-center gap-2">
+                <i data-lucide="filter" class="w-4 h-4 text-[#8B5CF6] shrink-0"></i>
+                <select onchange="handleBadgeFilter(this.value)" class="px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-slate-200 focus:outline-none focus:border-[#8B5CF6]">
+                  <option value="ALL" ${state.badgeFilter === 'ALL' ? 'selected' : ''}>Tất cả nhãn (ALL)</option>
+                  <option value="NEW" ${state.badgeFilter === 'NEW' ? 'selected' : ''}>NEW</option>
+                  <option value="HOT" ${state.badgeFilter === 'HOT' ? 'selected' : ''}>HOT</option>
+                  <option value="BEST SELLER" ${state.badgeFilter === 'BEST SELLER' ? 'selected' : ''}>BEST SELLER</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1">
+              ${categories.map(cat => {
+                const active = state.categoryFilter === cat;
+                return `<button onclick="handleCategoryFilter('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold tracking-wider uppercase whitespace-nowrap transition-all ${active ? 'btn-neon-primary text-white' : 'bg-white/[0.04] text-slate-400 hover:text-white border border-white/10'}">${cat}</button>`;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Grid Output -->
+          ${filtered.length === 0 ? `
+            <div class="glass-panel rounded-2xl p-12 text-center">
+              <p class="text-slate-300 font-semibold">Không tìm thấy sản phẩm nào phù hợp với bộ lọc.</p>
+              <button onclick="resetProductFilters()" class="mt-4 px-5 py-2.5 rounded-xl bg-[#8B5CF6]/20 border border-[#8B5CF6]/40 text-xs font-bold text-[#c4b5fd]">Đặt lại bộ lọc</button>
+            </div>
+          ` : `
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${filtered.map(p => renderProductCardHTML(p)).join('')}
+            </div>
+          `}
+        </section>
+      `;
+    }
+
+    function handleProductSearch(val) {
+      state.searchQuery = val;
+      renderApp();
+    }
+    function handleCategoryFilter(cat) {
+      state.categoryFilter = cat;
+      renderApp();
+    }
+    function handleBadgeFilter(badge) {
+      state.badgeFilter = badge;
+      renderApp();
+    }
+    function resetProductFilters() {
+      state.searchQuery = '';
+      state.categoryFilter = 'ALL';
+      state.badgeFilter = 'ALL';
+      renderApp();
+    }
+
+    // --- VIEW 3: PRODUCT DETAIL ---
+    function renderProductDetailView() {
+      const product = state.products.find(p => p.id === state.selectedProductId) || state.products[0];
+      if (!product) return '';
+
+      return `
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-view">
+          <!-- Breadcrumb -->
+          <div class="flex items-center gap-2 text-xs font-mono text-slate-400 mb-6">
+            <button onclick="navigateTo('HOME')" class="hover:text-white">HOME</button>
+            <span>/</span>
+            <button onclick="navigateTo('PRODUCTS')" class="hover:text-white">PRODUCTS</button>
+            <span>/</span>
+            <span class="text-[#00D4FF] truncate">${escapeHTML(product.name)}</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Info -->
+            <div class="lg:col-span-8 space-y-6">
+              <div class="glass-panel rounded-2xl overflow-hidden">
+                ${renderProductArtwork(product.artType, product.category, product.version, 'h-64 sm:h-72')}
+                <div class="p-6 sm:p-8">
+                  <div class="flex flex-wrap items-center gap-2.5 mb-4">
+                    ${renderBadgeHTML(product.badge)}
+                    <span class="px-2.5 py-0.5 text-xs font-mono rounded bg-[#8B5CF6]/15 text-[#c4b5fd] border border-[#8B5CF6]/30">Phiên bản: ${escapeHTML(product.version)}</span>
+                    <span class="px-2.5 py-0.5 text-xs font-mono rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Trạng thái: ${escapeHTML(product.status)}</span>
+                  </div>
+                  <h1 class="text-2xl sm:text-4xl font-black text-white">${escapeHTML(product.name)}</h1>
+                  <p class="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">${escapeHTML(product.fullDesc)}</p>
+                </div>
+              </div>
+
+              <!-- Features -->
+              <div class="glass-panel rounded-2xl p-6 sm:p-8">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-5">
+                  <i data-lucide="sparkles" class="w-5 h-5 text-[#00D4FF]"></i>
+                  <span>Tính Năng Nổi Bật</span>
+                </h2>
+                <ul class="space-y-3">
+                  ${product.features.map(f => `
+                    <li class="flex items-start gap-3 text-sm text-slate-200">
+                      <i data-lucide="check-circle-2" class="w-4 h-4 text-[#00D4FF] shrink-0 mt-0.5"></i>
+                      <span>${escapeHTML(f)}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+
+              <!-- Usage Guide -->
+              <div class="glass-panel rounded-2xl p-6 sm:p-8">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-5">
+                  <i data-lucide="terminal" class="w-5 h-5 text-[#8B5CF6]"></i>
+                  <span>Hướng Dẫn Cài Đặt & Sử Dụng</span>
+                </h2>
+                <div class="space-y-3">
+                  ${product.usageGuide.map((step, i) => `
+                    <div class="flex items-start gap-3.5 p-3.5 rounded-xl bg-[#08090D] border border-white/10">
+                      <span class="w-6 h-6 rounded-lg bg-[#8B5CF6]/20 border border-[#8B5CF6]/40 text-[#c4b5fd] font-mono text-xs font-bold flex items-center justify-center shrink-0">${i + 1}</span>
+                      <p class="text-sm text-slate-300 leading-relaxed">${escapeHTML(step)}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Changelog & Support -->
+              <div class="glass-panel rounded-2xl p-6 sm:p-8">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2 mb-3">
+                  <i data-lucide="refresh-cw" class="w-5 h-5 text-emerald-400"></i>
+                  <span>Nhật Ký Cập Nhật & Hỗ Trợ</span>
+                </h2>
+                <p class="text-xs font-mono text-[#00D4FF] bg-[#08090D] p-3.5 rounded-xl border border-white/10">${escapeHTML(product.changelog)}</p>
+                <p class="mt-3 text-xs text-slate-400">Hỗ trợ kỹ thuật 1-1 qua Discord chính thức và miễn phí cập nhật các bản vá lỗi trong suốt vòng đời sản phẩm.</p>
+              </div>
+            </div>
+
+            <!-- Right Sticky Purchase Box -->
+            <div class="lg:col-span-4">
+              <div class="sticky top-24 glass-panel border-[#8B5CF6]/40 rounded-2xl p-6 shadow-[0_0_40px_rgba(139,92,246,0.15)] space-y-6">
+                <div>
+                  <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Gói Bản Quyền Chính Thức</span>
+                  <div class="mt-2 text-3xl sm:text-4xl font-black text-white">${formatVND(product.price)}</div>
+                  <p class="mt-1 text-xs text-emerald-400 font-mono">✓ Cấp License Key định dạng Key_XXXXX</p>
+                </div>
+
+                <div class="space-y-2.5 text-xs text-slate-300 border-y border-white/10 py-4">
+                  <div class="flex justify-between"><span class="text-slate-400">Danh mục:</span><span class="font-mono text-white">${escapeHTML(product.category)}</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Phiên bản:</span><span class="font-mono text-[#00D4FF]">${escapeHTML(product.version)}</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Thời hạn Key:</span><span class="font-mono text-white">LIFETIME</span></div>
+                  <div class="flex justify-between"><span class="text-slate-400">Cổng thanh toán:</span><span class="font-mono text-amber-300">${state.config.gatewayConnected ? 'Tự động' : 'Xác nhận thủ công'}</span></div>
+                </div>
+
+                <button onclick="initiateBuyProduct('${product.id}')" class="btn-neon-primary w-full py-4 rounded-xl font-black text-sm tracking-wider uppercase text-white flex items-center justify-center gap-2">
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                  <span>BUY NOW</span>
+                </button>
+
+                <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-200/90 leading-relaxed">
+                  <strong>Quy trình minh bạch:</strong> Đơn hàng khởi tạo ở trạng thái <code class="font-mono font-bold">PENDING</code>. Mã License Key & tệp tải xuống chỉ mở khóa sau khi giao dịch được xác nhận <code class="font-mono font-bold">PAID</code>.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function initiateBuyProduct(productId) {
+      const product = state.products.find(p => p.id === productId);
+      if (!product) return;
+      if (product.status !== 'ACTIVE') {
+        showToast('warning', 'Sản phẩm đang bảo trì', 'Sản phẩm hiện đang tạm ngưng bán để bảo trì.');
+        return;
+      }
+      const user = getCurrentUser();
+      if (!user) {
+        state.pendingCheckoutProductId = productId;
+        showToast('info', 'Yêu cầu đăng nhập', 'Vui lòng đăng nhập để gắn License Key vào tài khoản của bạn.');
+        navigateTo('ACCOUNT');
+        return;
+      }
+      navigateTo('CHECKOUT', productId);
+    }
+
+    // --- VIEW 4: CHECKOUT (Honest Order Creation - No Fake Success) ---
+    function renderCheckoutView() {
+      const user = getCurrentUser();
+      const product = state.products.find(p => p.id === state.selectedProductId);
+      if (!user || !product) {
+        navigateTo('PRODUCTS');
+        return '';
+      }
+
+      return `
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-view">
+          <button onclick="navigateTo('PRODUCT_DETAIL', '${product.id}')" class="text-xs font-mono text-slate-400 hover:text-white mb-6 inline-flex items-center gap-1">
+            ← Quay lại chi tiết sản phẩm
+          </button>
+
+          <div class="glass-panel rounded-3xl p-6 sm:p-10 shadow-2xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+              <div>
+                <span class="text-xs font-mono text-[#00D4FF] uppercase tracking-widest">// ORDER INITIALIZATION</span>
+                <h1 class="text-2xl sm:text-3xl font-black text-white mt-1">Đặt Hàng Sản Phẩm Kỹ Thuật Số</h1>
+              </div>
+              <span class="px-3 py-1.5 rounded-full text-xs font-mono bg-amber-500/15 text-amber-300 border border-amber-500/30 self-start">
+                Trạng thái khởi tạo: PENDING
+              </span>
+            </div>
+
+            ${!state.config.gatewayConnected ? `
+              <div class="mt-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/35 flex items-start gap-3">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-400 shrink-0 mt-0.5"></i>
+                <div class="text-xs text-amber-100 leading-relaxed">
+                  <p class="font-bold text-amber-300">Cổng thanh toán tự động: CHƯA KẾT NỐI API WEBHOOK</p>
+                  <p class="mt-1">Hệ thống không giả lập thanh toán tự động. Sau khi nhấn <strong>TẠO ĐƠN HÀNG (PENDING)</strong>, vui lòng thực hiện chuyển khoản theo thông tin bên dưới. Quản trị viên sẽ đối soát và kích hoạt trạng thái <code class="font-mono font-bold">PAID</code> + cấp License Key cho bạn.</p>
+                </div>
+              </div>
+            ` : ''}
+
+            <div class="mt-6 p-5 rounded-2xl bg-[#08090D] border border-white/10 space-y-3">
+              <div class="flex justify-between text-sm"><span class="text-slate-400">Sản phẩm:</span><span class="font-bold text-white">${escapeHTML(product.name)}</span></div>
+              <div class="flex justify-between text-sm"><span class="text-slate-400">Phiên bản:</span><span class="font-mono text-[#00D4FF]">${escapeHTML(product.version)}</span></div>
+              <div class="flex justify-between text-sm"><span class="text-slate-400">Tài khoản nhận Key:</span><span class="font-mono text-white">${escapeHTML(user.username)} (${escapeHTML(user.email)})</span></div>
+              <div class="pt-3 border-t border-white/10 flex justify-between items-center">
+                <span class="text-sm font-bold text-slate-300">Tổng thanh toán:</span>
+                <span class="text-2xl font-black text-[#00D4FF]">${formatVND(product.price)}</span>
+              </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="mt-6">
+              <label class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-3">Phương thức thanh toán tại Việt Nam</label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                ${[
+                  { id: 'VIETQR_BANK', title: 'Chuyển khoản VietQR', desc: 'Ngân hàng nội địa 24/7' },
+                  { id: 'MOMO_MANUAL', title: 'Ví điện tử MoMo', desc: 'Chuyển khoản qua SĐT/QR' },
+                  { id: 'PAYOS_GATEWAY', title: 'PayOS / SePay API', desc: state.config.gatewayConnected ? 'Tự động xác nhận' : 'Chưa kết nối API' }
+                ].map(m => `
+                  <button type="button" onclick="selectCheckoutMethod('${m.id}')" class="p-4 rounded-xl border text-left transition-all ${state.checkoutMethod === m.id ? 'bg-[#8B5CF6]/15 border-[#8B5CF6] text-white shadow-[0_0_20px_rgba(139,92,246,0.25)]' : 'bg-[#08090D] border-white/10 text-slate-400 hover:border-white/25'}">
+                    <div class="text-sm font-bold text-white">${m.title}</div>
+                    <div class="text-[11px] font-mono mt-1 text-slate-400">${m.desc}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Configured Payment Account Info -->
+            <div class="mt-6 p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2 text-xs">
+              <div class="font-bold text-white flex items-center gap-2">
+                <i data-lucide="credit-card" class="w-4 h-4 text-[#00D4FF]"></i>
+                <span>Thông tin tài khoản nhận thanh toán:</span>
+              </div>
+              <p class="text-slate-300">Ngân hàng: <strong class="text-white">${escapeHTML(state.config.bankName)}</strong></p>
+              <p class="text-slate-300">Số tài khoản: <strong class="font-mono text-[#00D4FF]">${escapeHTML(state.config.bankAccount)}</strong></p>
+              <p class="text-slate-300">Chủ tài khoản: <strong class="text-white">${escapeHTML(state.config.bankOwner)}</strong></p>
+              <p class="text-slate-300">Ví MoMo: <strong class="font-mono text-[#c4b5fd]">${escapeHTML(state.config.momoPhone)}</strong></p>
+            </div>
+
+            <div class="mt-8">
+              <button onclick="submitCreateOrder('${product.id}')" class="btn-neon-primary w-full py-4 px-6 rounded-xl font-black text-sm tracking-wider uppercase text-white">
+                TẠO ĐƠN HÀNG (TRẠNG THÁI PENDING)
+              </button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function selectCheckoutMethod(method) {
+      state.checkoutMethod = method;
+      renderApp();
+    }
+
+    function submitCreateOrder(productId) {
+      const user = getCurrentUser();
+      const product = state.products.find(p => p.id === productId);
+      if (!user || !product) return;
+
+      const orderId = generateOrderId();
+      const newOrder = {
+        id: orderId,
+        userId: user.id,
+        username: user.username,
+        userEmail: user.email,
+        productId: product.id,
+        productName: product.name,
+        amount: product.price,
+        paymentMethod: state.checkoutMethod,
+        status: 'PENDING',
+        transferNote: `SAVIOUR ${orderId.replace('ORD-', '')} ${user.username.toUpperCase()}`,
+        createdAt: new Date().toISOString()
+      };
+
+      state.orders.unshift(newOrder);
+      saveAll();
+      state.accountTab = 'ORDERS';
+      showToast('warning', 'Đã tạo đơn hàng (PENDING)', `Mã đơn ${orderId} đang chờ xác nhận thanh toán. License Key sẽ mở khóa khi trạng thái là PAID.`);
+      navigateTo('ACCOUNT');
+    }
+
+    // --- VIEW 5: ACCOUNT & AUTHENTICATION ---
+    let authFormMode = 'LOGIN'; // 'LOGIN' or 'REGISTER'
+
+    function renderAccountView() {
+      const user = getCurrentUser();
+
+      if (!user) {
+        return `
+          <section class="max-w-md mx-auto px-4 py-14 animate-view">
+            <div class="glass-panel rounded-3xl p-8 shadow-2xl">
+              <div class="text-center mb-6">
+                <h1 class="text-2xl font-black text-white">${authFormMode === 'LOGIN' ? 'Đăng Nhập SAVIOUR' : 'Tạo Tài Khoản Mới'}</h1>
+                <p class="mt-1 text-xs text-slate-400">Quản lý License Key, đơn hàng và tải xuống phần mềm bản quyền.</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-[#08090D] border border-white/10 mb-6">
+                <button type="button" onclick="switchAuthMode('LOGIN')" class="py-2 rounded-lg text-xs font-bold transition-all ${authFormMode === 'LOGIN' ? 'bg-[#8B5CF6] text-white' : 'text-slate-400 hover:text-white'}">ĐĂNG NHẬP</button>
+                <button type="button" onclick="switchAuthMode('REGISTER')" class="py-2 rounded-lg text-xs font-bold transition-all ${authFormMode === 'REGISTER' ? 'bg-[#8B5CF6] text-white' : 'text-slate-400 hover:text-white'}">ĐĂNG KÝ</button>
+              </div>
+
+              <form onsubmit="handleAuthFormSubmit(event)" class="space-y-4">
+                ${authFormMode === 'REGISTER' ? `
+                  <div>
+                    <label class="block text-xs font-mono text-slate-400 mb-1.5">USERNAME</label>
+                    <input id="authUsername" type="text" required placeholder="vd: cyber_operator" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+                  </div>
+                ` : ''}
+
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">${authFormMode === 'LOGIN' ? 'EMAIL HOẶC USERNAME' : 'EMAIL'}</label>
+                  <input id="authEmail" type="text" required placeholder="admin@saviour.vn" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">MẬT KHẨU</label>
+                  <input id="authPassword" type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+                </div>
+
+                <button type="submit" class="btn-neon-primary w-full py-3.5 rounded-xl font-bold text-sm uppercase tracking-wider text-white">
+                  ${authFormMode === 'LOGIN' ? 'ĐĂNG NHẬP NGAY' : 'HOÀN TẤT ĐĂNG KÝ'}
+                </button>
+              </form>
+
+              <div class="mt-6 pt-5 border-t border-white/10">
+                <p class="text-[11px] font-mono text-slate-400 text-center mb-3">ĐĂNG NHẬP NHANH ĐỂ KIỂM THỬ HỆ THỐNG:</p>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <button type="button" onclick="quickDemoLogin('USER')" class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition-all">
+                    Khách hàng (User)
+                  </button>
+                  <button type="button" onclick="quickDemoLogin('ADMIN')" class="py-2.5 px-3 rounded-xl bg-[#8B5CF6]/15 hover:bg-[#8B5CF6]/25 border border-[#8B5CF6]/40 text-xs font-semibold text-[#c4b5fd] transition-all">
+                    Quản trị (Admin)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      // Logged-in User Dashboard
+      const myOrders = state.orders.filter(o => o.userId === user.id);
+      const myLicenses = state.licenses.filter(l => l.userId === user.id);
+
+      return `
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8 animate-view">
+          <!-- Profile Banner -->
+          <div class="glass-panel rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#00D4FF] flex items-center justify-center text-white font-black text-xl shadow-[0_0_25px_rgba(139,92,246,0.4)]">
+                ${escapeHTML(user.username.slice(0, 2).toUpperCase())}
+              </div>
+              <div>
+                <div class="flex items-center gap-2.5">
+                  <h1 class="text-xl sm:text-2xl font-black text-white">${escapeHTML(user.username)}</h1>
+                  <span class="px-2.5 py-0.5 text-[10px] font-mono font-bold rounded-full border ${user.role === 'ADMIN' ? 'bg-[#8B5CF6]/20 text-[#c4b5fd] border-[#8B5CF6]/50' : 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/40'}">
+                    ${user.role}
+                  </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-400 mt-0.5">${escapeHTML(user.email)}</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              ${user.role === 'ADMIN' ? `
+                <button onclick="navigateTo('ADMIN')" class="px-4 py-2.5 rounded-xl bg-[#8B5CF6] text-white text-xs font-bold tracking-wider uppercase flex items-center gap-2 shadow-[0_0_20px_rgba(139,92,246,0.4)]">
+                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  <span>Vào Admin Dashboard</span>
+                </button>
+              ` : ''}
+              <button onclick="handleLogout()" class="px-4 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Account Tabs -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1">
+            ${[
+              { id: 'ORDERS', label: `Lịch sử đơn hàng (${myOrders.length})`, icon: 'shopping-cart' },
+              { id: 'LICENSES', label: `Quản lý License Key (${myLicenses.length})`, icon: 'key' },
+              { id: 'DOWNLOADS', label: `Tải xuống sản phẩm (${myLicenses.length})`, icon: 'download' },
+              { id: 'PROFILE', label: 'Hồ sơ cá nhân', icon: 'user' }
+            ].map(t => `
+              <button onclick="setAccountTab('${t.id}')" class="px-4 py-3 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all ${state.accountTab === t.id ? 'btn-neon-primary text-white' : 'bg-[#0f111a]/80 text-slate-400 hover:text-white border border-white/10'}">
+                <i data-lucide="${t.icon}" class="w-4 h-4"></i>
+                <span>${t.label}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Tab Content -->
+          ${state.accountTab === 'ORDERS' ? `
+            <div class="glass-panel rounded-2xl p-6">
+              <h2 class="text-lg font-bold text-white mb-4">Lịch Sử Mua Hàng</h2>
+              ${myOrders.length === 0 ? `
+                <div class="text-center py-10">
+                  <p class="text-sm text-slate-400">Bạn chưa có đơn hàng nào.</p>
+                  <button onclick="navigateTo('PRODUCTS')" class="mt-4 px-5 py-2.5 rounded-xl bg-[#8B5CF6] text-xs font-bold text-white">Khám phá sản phẩm ngay</button>
+                </div>
+              ` : `
+                <div class="space-y-4">
+                  ${myOrders.map(ord => `
+                    <div class="p-5 rounded-2xl bg-[#08090D] border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                      <div class="space-y-1">
+                        <div class="flex flex-wrap items-center gap-2.5">
+                          <span class="font-mono text-xs font-bold text-[#00D4FF]">${escapeHTML(ord.id)}</span>
+                          ${renderOrderStatusHTML(ord.status)}
+                          <span class="text-[11px] font-mono text-slate-500">${new Date(ord.createdAt).toLocaleString('vi-VN')}</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white">${escapeHTML(ord.productName)}</h3>
+                        <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+                          <span>Nội dung CK: <strong class="text-slate-200">${escapeHTML(ord.transferNote)}</strong></span>
+                          <button onclick="copyToClipboard('${escapeHTML(ord.transferNote)}', 'Nội dung chuyển khoản')" class="text-[#00D4FF] hover:underline">[Copy]</button>
+                        </div>
+                      </div>
+
+                      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div class="text-left sm:text-right">
+                          <div class="text-lg font-black text-white">${formatVND(ord.amount)}</div>
+                          <div class="text-[11px] font-mono text-slate-400">${escapeHTML(ord.paymentMethod)}</div>
+                        </div>
+                        ${ord.status === 'PENDING' ? `
+                          <div class="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200 max-w-xs">
+                            Đang chờ Admin xác nhận thanh toán. Key sẽ mở khóa khi trạng thái là <strong>PAID</strong>.
+                          </div>
+                        ` : ord.status === 'PAID' ? `
+                          <button onclick="setAccountTab('LICENSES')" class="px-4 py-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold hover:bg-emerald-500/30">
+                            Xem License Key →
+                          </button>
+                        ` : ''}
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          ` : ''}
+
+          ${state.accountTab === 'LICENSES' ? `
+            <div class="glass-panel rounded-2xl p-6">
+              <h2 class="text-lg font-bold text-white mb-4">Danh Sách License Key Đã Sở Hữu</h2>
+              ${myLicenses.length === 0 ? `
+                <div class="text-center py-10 text-sm text-slate-400">
+                  Chưa có License Key nào. Key chỉ được cấp phát sau khi đơn hàng đạt trạng thái <strong class="text-emerald-400">PAID</strong>.
+                </div>
+              ` : `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  ${myLicenses.map(lic => `
+                    <div class="p-5 rounded-2xl bg-[#08090D] border border-[#8B5CF6]/35 space-y-3">
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-slate-400">Đơn: ${escapeHTML(lic.orderId)}</span>
+                        <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded ${lic.status === 'ACTIVE' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'}">${lic.status}</span>
+                      </div>
+                      <h3 class="font-bold text-white text-sm">${escapeHTML(lic.productName)}</h3>
+                      <div class="p-3 rounded-xl bg-[#0f111a] border border-white/10 flex items-center justify-between gap-2">
+                        <code class="font-mono text-xs sm:text-sm font-bold text-[#00D4FF] select-all">${escapeHTML(lic.key)}</code>
+                        <button onclick="copyToClipboard('${escapeHTML(lic.key)}', 'License Key')" class="p-2 rounded-lg bg-white/5 hover:bg-white/15 text-slate-200" title="Sao chép">
+                          <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                        <span>Thời hạn: ${escapeHTML(lic.expiresAt)}</span>
+                        <span>Cấp ngày: ${new Date(lic.createdAt).toLocaleDateString('vi-VN')}</span>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          ` : ''}
+
+          ${state.accountTab === 'DOWNLOADS' ? `
+            <div class="glass-panel rounded-2xl p-6">
+              <h2 class="text-lg font-bold text-white mb-4">Tải Xuống Phần Mềm Đã Mua</h2>
+              ${myLicenses.length === 0 ? `
+                <div class="text-center py-10 text-sm text-slate-400">
+                  Bạn chưa sở hữu gói phần mềm nào đã kích hoạt bản quyền.
+                </div>
+              ` : `
+                <div class="space-y-4">
+                  ${myLicenses.map(lic => {
+                    const prod = state.products.find(p => p.id === lic.productId);
+                    if (!prod) return '';
+                    return `
+                      <div class="p-5 rounded-2xl bg-[#08090D] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                          <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-[#00D4FF]/15 text-[#00D4FF]">${escapeHTML(prod.version)}</span>
+                            <span class="text-xs font-mono text-slate-400">License: ${escapeHTML(lic.key)}</span>
+                          </div>
+                          <h3 class="text-base font-bold text-white mt-1">${escapeHTML(prod.name)}</h3>
+                          <p class="text-xs text-slate-400 mt-0.5">Gói cài đặt kèm chứng thực bản quyền & hướng dẫn cấu hình.</p>
+                        </div>
+                        <button onclick="downloadProductPackage('${lic.id}')" ${lic.status !== 'ACTIVE' ? 'disabled' : ''} class="px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 ${lic.status === 'ACTIVE' ? 'btn-neon-primary text-white' : 'bg-white/5 text-slate-500 cursor-not-allowed'}">
+                          <i data-lucide="download" class="w-4 h-4"></i>
+                          <span>Tải Xuống Ngay</span>
+                        </button>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `}
+            </div>
+          ` : ''}
+
+          ${state.accountTab === 'PROFILE' ? `
+            <div class="glass-panel rounded-2xl p-6 space-y-4">
+              <h2 class="text-lg font-bold text-white">Thông Tin Hồ Sơ</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-[#08090D] border border-white/10">
+                  <span class="text-xs font-mono text-slate-400 block">USER ID</span>
+                  <span class="font-mono text-white mt-1 block">${escapeHTML(user.id)}</span>
+                </div>
+                <div class="p-4 rounded-xl bg-[#08090D] border border-white/10">
+                  <span class="text-xs font-mono text-slate-400 block">USERNAME</span>
+                  <span class="font-bold text-white mt-1 block">${escapeHTML(user.username)}</span>
+                </div>
+                <div class="p-4 rounded-xl bg-[#08090D] border border-white/10">
+                  <span class="text-xs font-mono text-slate-400 block">EMAIL</span>
+                  <span class="text-white mt-1 block">${escapeHTML(user.email)}</span>
+                </div>
+                <div class="p-4 rounded-xl bg-[#08090D] border border-white/10">
+                  <span class="text-xs font-mono text-slate-400 block">NGÀY THAM GIA</span>
+                  <span class="text-white mt-1 block">${new Date(user.createdAt).toLocaleString('vi-VN')}</span>
+                </div>
+              </div>
+            </div>
+          ` : ''}
+        </section>
+      `;
+    }
+
+    function switchAuthMode(mode) {
+      authFormMode = mode;
+      renderApp();
+    }
+
+    function setAccountTab(tab) {
+      state.accountTab = tab;
+      renderApp();
+    }
+
+    function handleAuthFormSubmit(e) {
+      e.preventDefault();
+      const emailOrUser = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+
+      if (authFormMode === 'LOGIN') {
+        const found = state.users.find(
+          u => (u.email.toLowerCase() === emailOrUser.toLowerCase() || u.username.toLowerCase() === emailOrUser.toLowerCase()) && u.password === password
+        );
+        if (!found) {
+          showToast('error', 'Đăng nhập thất bại', 'Email/Username hoặc mật khẩu không đúng.');
+          return;
+        }
+        state.currentUserId = found.id;
+        saveAll();
+        showToast('success', 'Đăng nhập thành công', `Chào mừng ${found.username} quay lại SAVIOUR.`);
+        if (state.pendingCheckoutProductId) {
+          const pid = state.pendingCheckoutProductId;
+          state.pendingCheckoutProductId = null;
+          navigateTo('CHECKOUT', pid);
+        } else {
+          navigateTo(found.role === 'ADMIN' ? 'ADMIN' : 'ACCOUNT');
+        }
+      } else {
+        const username = document.getElementById('authUsername').value.trim();
+        if (!username || !emailOrUser || password.length < 6) {
+          showToast('warning', 'Dữ liệu chưa hợp lệ', 'Vui lòng nhập đầy đủ thông tin và mật khẩu từ 6 ký tự.');
+          return;
+        }
+        const exists = state.users.some(u => u.email.toLowerCase() === emailOrUser.toLowerCase() || u.username.toLowerCase() === username.toLowerCase());
+        if (exists) {
+          showToast('error', 'Tài khoản đã tồn tại', 'Email hoặc Username này đã được sử dụng.');
+          return;
+        }
+        const newUser = {
+          id: 'usr_' + Date.now(),
+          username,
+          email: emailOrUser,
+          password,
+          role: 'USER',
+          createdAt: new Date().toISOString()
+        };
+        state.users.push(newUser);
+        state.currentUserId = newUser.id;
+        saveAll();
+        showToast('success', 'Đăng ký thành công', 'Tài khoản SAVIOUR của bạn đã sẵn sàng.');
+        if (state.pendingCheckoutProductId) {
+          const pid = state.pendingCheckoutProductId;
+          state.pendingCheckoutProductId = null;
+          navigateTo('CHECKOUT', pid);
+        } else {
+          navigateTo('ACCOUNT');
+        }
+      }
+    }
+
+    function quickDemoLogin(role) {
+      const target = state.users.find(u => u.role === role);
+      if (!target) return;
+      state.currentUserId = target.id;
+      saveAll();
+      showToast('info', `Đăng nhập nhanh (${role})`, `Đang sử dụng tài khoản ${target.username}.`);
+      if (state.pendingCheckoutProductId) {
+        const pid = state.pendingCheckoutProductId;
+        state.pendingCheckoutProductId = null;
+        navigateTo('CHECKOUT', pid);
+      } else {
+        navigateTo(role === 'ADMIN' ? 'ADMIN' : 'ACCOUNT');
+      }
+    }
+
+    function handleLogout() {
+      state.currentUserId = null;
+      saveAll();
+      showToast('info', 'Đã đăng xuất', 'Phiên làm việc đã được đóng.');
+      navigateTo('HOME');
+    }
+
+    function downloadProductPackage(licenseId) {
+      const lic = state.licenses.find(l => l.id === licenseId);
+      if (!lic || lic.status !== 'ACTIVE') {
+        showToast('error', 'Không thể tải xuống', 'License Key không hợp lệ hoặc đã bị thu hồi.');
+        return;
+      }
+      const prod = state.products.find(p => p.id === lic.productId);
+      if (!prod) return;
+
+      const content = `================================================================
+SAVIOUR DIGITAL SYSTEMS — LICENSED DELIVERABLE PACKAGE
+================================================================
+Product Name   : ${prod.name}
+Version        : ${prod.version}
+Category       : ${prod.category}
+Licensed To    : ${lic.username}
+Order ID       : ${lic.orderId}
+License Key    : ${lic.key}
+License Status : ${lic.status} (${lic.expiresAt})
+Issued Date    : ${new Date(lic.createdAt).toLocaleString('vi-VN')}
+----------------------------------------------------------------
+INSTALLATION & USAGE GUIDE:
+${prod.usageGuide.map((s, idx) => `${idx + 1}. ${s}`).join('\n')}
+
+SECURITY POLICY:
+- License Key được liên kết với tài khoản ${lic.username}.
+- Hỗ trợ kỹ thuật chính thức: ${state.config.discordUrl}
+================================================================`;
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${prod.id}_${prod.version}_LICENSED.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast('success', 'Tải xuống thành công', `Đã tải gói cài đặt bản quyền cho ${prod.name}.`);
+    }
+
+    // --- VIEW 6: ADMIN DASHBOARD ---
+    function renderAdminView() {
+      const user = getCurrentUser();
+      if (!user || user.role !== 'ADMIN') {
+        return `
+          <section class="max-w-lg mx-auto px-4 py-16 text-center animate-view">
+            <div class="glass-panel border-rose-500/30 rounded-3xl p-8">
+              <i data-lucide="shield-alert" class="w-12 h-12 text-rose-400 mx-auto mb-4"></i>
+              <h1 class="text-2xl font-black text-white">Khu Vực Quản Trị (Admin Only)</h1>
+              <p class="mt-2 text-sm text-slate-400">Vui lòng đăng nhập bằng tài khoản có quyền ADMIN để truy cập.</p>
+              <button onclick="quickDemoLogin('ADMIN')" class="mt-6 px-6 py-3 rounded-xl bg-[#8B5CF6] text-xs font-bold text-white uppercase">
+                Đăng nhập Admin ngay
+              </button>
+            </div>
+          </section>
+        `;
+      }
+
+      const paidOrders = state.orders.filter(o => o.status === 'PAID');
+      const pendingOrders = state.orders.filter(o => o.status === 'PENDING');
+      const revenue = paidOrders.reduce((sum, o) => sum + o.amount, 0);
+
+      return `
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8 animate-view">
+          <!-- Header & Subnav -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-xs font-mono uppercase tracking-[0.25em] text-[#8B5CF6]">// SAVIOUR COMMAND CENTER</span>
+              <h1 class="mt-1 text-3xl font-black text-white">Admin Control Panel</h1>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              ${[
+                { id: 'DASHBOARD', label: 'Tổng quan', icon: 'activity' },
+                { id: 'ORDERS', label: `Đơn hàng (${state.orders.length})`, icon: 'shopping-cart' },
+                { id: 'PRODUCTS', label: `Sản phẩm (${state.products.length})`, icon: 'package' },
+                { id: 'LICENSES', label: `License Keys (${state.licenses.length})`, icon: 'key' },
+                { id: 'USERS', label: `Người dùng (${state.users.length})`, icon: 'users' },
+                { id: 'SETTINGS', label: 'Cấu hình Web', icon: 'settings' }
+              ].map(t => `
+                <button onclick="setAdminTab('${t.id}')" class="px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${state.adminTab === t.id ? 'btn-neon-primary text-white' : 'bg-[#0f111a]/80 text-slate-300 border border-white/10 hover:border-white/25'}">
+                  <i data-lucide="${t.icon}" class="w-3.5 h-3.5"></i>
+                  <span>${t.label}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- TAB: DASHBOARD -->
+          ${state.adminTab === 'DASHBOARD' ? `
+            <div class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="glass-panel rounded-2xl p-6">
+                  <span class="text-xs font-mono text-slate-400">DOANH THU THỰC TẾ (PAID)</span>
+                  <div class="mt-2 text-2xl sm:text-3xl font-black text-emerald-400">${formatVND(revenue)}</div>
+                  <span class="text-[11px] text-slate-500 mt-1 block">Từ ${paidOrders.length} đơn đã thanh toán</span>
+                </div>
+                <div class="glass-panel rounded-2xl p-6">
+                  <span class="text-xs font-mono text-slate-400">ĐƠN CHỜ DUYỆT (PENDING)</span>
+                  <div class="mt-2 text-2xl sm:text-3xl font-black text-amber-300">${pendingOrders.length}</div>
+                  <button onclick="setAdminTab('ORDERS')" class="text-[11px] text-[#00D4FF] hover:underline mt-1 inline-block">Duyệt đơn hàng →</button>
+                </div>
+                <div class="glass-panel rounded-2xl p-6">
+                  <span class="text-xs font-mono text-slate-400">LICENSE KEYS ĐÃ CẤP</span>
+                  <div class="mt-2 text-2xl sm:text-3xl font-black text-[#c4b5fd]">${state.licenses.length}</div>
+                  <span class="text-[11px] text-slate-500 mt-1 block">Active: ${state.licenses.filter(l => l.status === 'ACTIVE').length}</span>
+                </div>
+                <div class="glass-panel rounded-2xl p-6">
+                  <span class="text-xs font-mono text-slate-400">TICKET HỖ TRỢ</span>
+                  <div class="mt-2 text-2xl sm:text-3xl font-black text-white">${state.tickets.length}</div>
+                  <span class="text-[11px] text-slate-500 mt-1 block">Mở: ${state.tickets.filter(t => t.status === 'OPEN').length}</span>
+                </div>
+              </div>
+
+              <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-lg font-bold text-white mb-4">Đơn Hàng Gần Nhất</h2>
+                ${state.orders.length === 0 ? `
+                  <p class="text-sm text-slate-400">Chưa có đơn hàng nào được tạo trên hệ thống.</p>
+                ` : `
+                  <div class="space-y-3">
+                    ${state.orders.slice(0, 6).map(ord => `
+                      <div class="p-4 rounded-xl bg-[#08090D] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                          <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs font-bold text-[#00D4FF]">${escapeHTML(ord.id)}</span>
+                            ${renderOrderStatusHTML(ord.status)}
+                          </div>
+                          <p class="text-sm font-bold text-white mt-1">${escapeHTML(ord.productName)} — <span class="text-emerald-400">${formatVND(ord.amount)}</span></p>
+                          <p class="text-xs text-slate-400">Khách: ${escapeHTML(ord.username)} • Nội dung CK: ${escapeHTML(ord.transferNote)}</p>
+                        </div>
+                        ${ord.status === 'PENDING' ? `
+                          <div class="flex items-center gap-2">
+                            <button onclick="adminUpdateOrder('${ord.id}', 'PAID')" class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs hover:bg-emerald-400">
+                              Duyệt PAID & Cấp Key
+                            </button>
+                            <button onclick="adminUpdateOrder('${ord.id}', 'CANCELLED')" class="px-3 py-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold">
+                              Hủy
+                            </button>
+                          </div>
+                        ` : ''}
+                      </div>
+                    `).join('')}
+                  </div>
+                `}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- TAB: ORDERS -->
+          ${state.adminTab === 'ORDERS' ? `
+            <div class="glass-panel rounded-2xl p-6">
+              <h2 class="text-lg font-bold text-white mb-4">Quản Lý Toàn Bộ Đơn Hàng</h2>
+              ${state.orders.length === 0 ? `<p class="text-sm text-slate-400">Chưa có đơn hàng nào.</p>` : `
+                <div class="space-y-4">
+                  ${state.orders.map(ord => `
+                    <div class="p-5 rounded-2xl bg-[#08090D] border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                      <div class="space-y-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <span class="font-mono text-xs font-bold text-[#00D4FF]">${escapeHTML(ord.id)}</span>
+                          ${renderOrderStatusHTML(ord.status)}
+                          <span class="text-xs font-mono text-slate-500">${new Date(ord.createdAt).toLocaleString('vi-VN')}</span>
+                        </div>
+                        <div class="text-base font-bold text-white">${escapeHTML(ord.productName)}</div>
+                        <div class="text-xs text-slate-400">Khách: <strong class="text-slate-200">${escapeHTML(ord.username)}</strong> (${escapeHTML(ord.userEmail)}) | Phương thức: ${escapeHTML(ord.paymentMethod)}</div>
+                        <div class="text-xs font-mono text-amber-300">Nội dung CK: ${escapeHTML(ord.transferNote)}</div>
+                      </div>
+                      <div class="flex flex-wrap items-center gap-3">
+                        <span class="text-lg font-black text-white mr-2">${formatVND(ord.amount)}</span>
+                        ${ord.status !== 'PAID' ? `
+                          <button onclick="adminUpdateOrder('${ord.id}', 'PAID')" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase">
+                            Xác nhận PAID + Cấp Key
+                          </button>
+                        ` : ''}
+                        ${ord.status !== 'CANCELLED' ? `
+                          <button onclick="adminUpdateOrder('${ord.id}', 'CANCELLED')" class="px-4 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 font-bold text-xs">
+                            Hủy đơn
+                          </button>
+                        ` : ''}
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          ` : ''}
+
+          <!-- TAB: PRODUCTS CRUD -->
+          ${state.adminTab === 'PRODUCTS' ? `
+            <div class="glass-panel rounded-2xl p-6">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-lg font-bold text-white">Quản Lý Danh Mục & Sản Phẩm</h2>
+                  <p class="text-xs text-slate-400">Thêm mới, chỉnh sửa giá, phiên bản, nhãn nổi bật hoặc xóa sản phẩm.</p>
+                </div>
+                <button onclick="openProductEditorModal()" class="btn-neon-primary px-4 py-2.5 rounded-xl text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 self-start">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Thêm Sản Phẩm Mới</span>
+                </button>
+              </div>
+
+              <div class="space-y-3">
+                ${state.products.map(p => `
+                  <div class="p-4 rounded-2xl bg-[#08090D] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-white/5 text-[#00D4FF] border border-white/10">${escapeHTML(p.category)}</span>
+                        <span class="text-xs font-mono text-slate-400">${escapeHTML(p.version)}</span>
+                        ${renderBadgeHTML(p.badge)}
+                      </div>
+                      <h3 class="font-bold text-white text-base">${escapeHTML(p.name)}</h3>
+                      <p class="text-xs text-slate-400 line-clamp-1">${escapeHTML(p.shortDesc)}</p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                      <span class="font-black text-white text-base mr-2">${formatVND(p.price)}</span>
+                      <button onclick="openProductEditorModal('${p.id}')" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200" title="Sửa">
+                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                      </button>
+                      <button onclick="deleteProduct('${p.id}')" class="p-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400" title="Xóa">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- TAB: LICENSES -->
+          ${state.adminTab === 'LICENSES' ? `
+            <div class="glass-panel rounded-2xl p-6">
+              <h2 class="text-lg font-bold text-white mb-4">Quản Lý Mã Bản Quyền (License Keys)</h2>
+              ${state.licenses.length === 0 ? `<p class="text-sm text-slate-400">Chưa có mã bản quyền nào được cấp phát.</p>` : `
+                <div class="space-y-3">
+                  ${state.licenses.map(lic => `
+                    <div class="p-4 rounded-xl bg-[#08090D] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <code class="font-mono text-sm font-bold text-[#00D4FF]">${escapeHTML(lic.key)}</code>
+                          <span class="px-2 py-0.5 text-[10px] font-mono rounded ${lic.status === 'ACTIVE' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}">${lic.status}</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mt-1">Sản phẩm: <strong>${escapeHTML(lic.productName)}</strong> • Chủ sở hữu: <span class="text-[#c4b5fd]">${escapeHTML(lic.username)}</span> (${escapeHTML(lic.orderId)})</p>
+                      </div>
+                      <button onclick="toggleLicenseStatus('${lic.id}')" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 self-start md:self-auto">
+                        ${lic.status === 'ACTIVE' ? 'Thu hồi (Revoke)' : 'Kích hoạt lại'}
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          ` : ''}
+
+          <!-- TAB: USERS -->
+          ${state.adminTab === 'USERS' ? `
+            <div class="glass-panel rounded-2xl p-6">
+              <h2 class="text-lg font-bold text-white mb-4">Danh Sách Người Dùng Hệ Thống</h2>
+              <div class="space-y-3">
+                ${state.users.map(u => `
+                  <div class="p-4 rounded-xl bg-[#08090D] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-white">${escapeHTML(u.username)}</span>
+                        <span class="px-2 py-0.5 text-[10px] font-mono rounded ${u.role === 'ADMIN' ? 'bg-[#8B5CF6]/20 text-[#c4b5fd]' : 'bg-white/5 text-slate-400'}">${u.role}</span>
+                      </div>
+                      <p class="text-xs text-slate-400">${escapeHTML(u.email)}</p>
+                    </div>
+                    ${u.id !== user.id ? `
+                      <button onclick="toggleUserRole('${u.id}')" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 self-start sm:self-auto">
+                        Đổi quyền sang ${u.role === 'ADMIN' ? 'USER' : 'ADMIN'}
+                      </button>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- TAB: SETTINGS -->
+          ${state.adminTab === 'SETTINGS' ? `
+            <form onsubmit="saveAdminSettings(event)" class="glass-panel rounded-2xl p-6 space-y-6">
+              <h2 class="text-lg font-bold text-white">Cấu Hình Website & Cổng Thanh Toán</h2>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">THÔNG BÁO HEADER TOÀN TRANG</label>
+                  <input id="cfgAnnouncement" type="text" value="${escapeHTML(state.config.announcementText)}" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">NGÂN HÀNG NHẬN THANH TOÁN</label>
+                  <input id="cfgBankName" type="text" value="${escapeHTML(state.config.bankName)}" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">SỐ TÀI KHOẢN NGÂN HÀNG</label>
+                  <input id="cfgBankAccount" type="text" value="${escapeHTML(state.config.bankAccount)}" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">CHỦ TÀI KHOẢN</label>
+                  <input id="cfgBankOwner" type="text" value="${escapeHTML(state.config.bankOwner)}" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">SỐ ĐIỆN THOẠI VÍ MOMO</label>
+                  <input id="cfgMomoPhone" type="text" value="${escapeHTML(state.config.momoPhone)}" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+                </div>
+
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-mono text-slate-400 mb-1.5">LINK DISCORD CỘNG ĐỒNG</label>
+                  <input id="cfgDiscordUrl" type="text" value="${escapeHTML(state.config.discordUrl)}" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+                </div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#08090D] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <p class="text-sm font-bold text-white">Trạng thái kết nối Webhook Cổng Thanh Toán Tự Động</p>
+                  <p class="text-xs text-slate-400">Chỉ bật CONNECTED khi đã đấu nối API PayOS / SePay / Casso thực tế.</p>
+                </div>
+                <button type="button" onclick="toggleGatewayConnection()" class="px-4 py-2 rounded-xl text-xs font-bold self-start sm:self-auto ${state.config.gatewayConnected ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'}">
+                  ${state.config.gatewayConnected ? 'CONNECTED' : 'NOT CONNECTED'}
+                </button>
+              </div>
+
+              <button type="submit" class="btn-neon-primary px-6 py-3 rounded-xl text-xs font-bold uppercase text-white">
+                Lưu Cấu Hình Hệ Thống
+              </button>
+            </form>
+          ` : ''}
+        </section>
+      `;
+    }
+
+    function setAdminTab(tab) {
+      state.adminTab = tab;
+      renderApp();
+    }
+
+    function adminUpdateOrder(orderId, newStatus) {
+      const order = state.orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      order.status = newStatus;
+      if (newStatus === 'PAID') {
+        order.paidAt = new Date().toISOString();
+        const existingLic = state.licenses.find(l => l.orderId === orderId);
+        if (!existingLic) {
+          const newKey = generateLicenseKey();
+          state.licenses.unshift({
+            id: 'lic_' + Date.now(),
+            key: newKey,
+            orderId: order.id,
+            userId: order.userId,
+            username: order.username,
+            productId: order.productId,
+            productName: order.productName,
+            status: 'ACTIVE',
+            expiresAt: 'LIFETIME',
+            createdAt: new Date().toISOString()
+          });
+          showToast('success', 'Xác nhận PAID & Cấp Key', `Đơn ${orderId} hoàn tất. Đã phát hành ${newKey} cho ${order.username}.`);
+        }
+      } else if (newStatus === 'CANCELLED') {
+        showToast('error', 'Đã hủy đơn hàng', `Đơn hàng ${orderId} đã chuyển sang CANCELLED.`);
+      }
+      saveAll();
+      renderApp();
+    }
+
+    function toggleLicenseStatus(licId) {
+      const lic = state.licenses.find(l => l.id === licId);
+      if (!lic) return;
+      lic.status = lic.status === 'ACTIVE' ? 'REVOKED' : 'ACTIVE';
+      saveAll();
+      showToast('info', 'Cập nhật License Key', `Key ${lic.key} hiện ở trạng thái ${lic.status}.`);
+      renderApp();
+    }
+
+    function toggleUserRole(uid) {
+      const u = state.users.find(x => x.id === uid);
+      if (!u) return;
+      u.role = u.role === 'ADMIN' ? 'USER' : 'ADMIN';
+      saveAll();
+      showToast('success', 'Phân quyền thành công', `${u.username} hiện có vai trò ${u.role}.`);
+      renderApp();
+    }
+
+    function toggleGatewayConnection() {
+      state.config.gatewayConnected = !state.config.gatewayConnected;
+      saveAll();
+      renderApp();
+    }
+
+    function saveAdminSettings(e) {
+      e.preventDefault();
+      state.config.announcementText = document.getElementById('cfgAnnouncement').value.trim();
+      state.config.bankName = document.getElementById('cfgBankName').value.trim();
+      state.config.bankAccount = document.getElementById('cfgBankAccount').value.trim();
+      state.config.bankOwner = document.getElementById('cfgBankOwner').value.trim();
+      state.config.momoPhone = document.getElementById('cfgMomoPhone').value.trim();
+      state.config.discordUrl = document.getElementById('cfgDiscordUrl').value.trim();
+      saveAll();
+      showToast('success', 'Đã lưu cấu hình', 'Thông tin thanh toán và nội dung website đã được cập nhật.');
+      renderApp();
+    }
+
+    function deleteProduct(prodId) {
+      state.products = state.products.filter(p => p.id !== prodId);
+      saveAll();
+      showToast('info', 'Đã xóa sản phẩm', 'Sản phẩm đã được gỡ khỏi cửa hàng.');
+      renderApp();
+    }
+
+    // --- VIEW 7: SUPPORT & FAQ ---
+    function renderSupportView() {
+      return `
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-view">
+          <div class="text-center max-w-2xl mx-auto mb-12">
+            <span class="text-xs font-mono uppercase tracking-[0.25em] text-[#00D4FF]">// 24/7 TECHNICAL SUPPORT</span>
+            <h1 class="mt-2 text-3xl sm:text-5xl font-black text-white">Trung Tâm Hỗ Trợ SAVIOUR</h1>
+            <p class="mt-3 text-sm text-slate-400">Hỗ trợ kích hoạt License Key, đối soát thanh toán và hướng dẫn cài đặt sản phẩm.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-6 space-y-4">
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="help-circle" class="w-5 h-5 text-[#8B5CF6]"></i>
+                <span>Câu Hỏi Thường Gặp</span>
+              </h2>
+              ${[
+                {
+                  q: 'Khi nào tôi nhận được License Key và link tải xuống?',
+                  a: 'Sau khi bạn tạo đơn hàng (PENDING) và hoàn tất chuyển khoản, Admin sẽ xác nhận giao dịch sang PAID. Hệ thống sẽ tự động cấp mã Key_XXXXX và mở khóa nút tải xuống ngay trong trang Tài khoản.'
+                },
+                {
+                  q: 'Tôi có thể đổi thiết bị hoặc VPS sử dụng License Key không?',
+                  a: 'Được hỗ trợ. Bạn có thể gửi Ticket hoặc liên hệ trực tiếp trên Discord SAVIOUR để được Reset HWID miễn phí.'
+                },
+                {
+                  q: 'Các sản phẩm có chạy được trên điện thoại Android (Termux) không?',
+                  a: 'Các sản phẩm thuộc danh mục TOOL / SCRIPT có ghi chú hỗ trợ Termux đều tương thích hoàn toàn với Android 12–15.'
+                }
+              ].map(faq => `
+                <div class="glass-panel rounded-2xl p-5 space-y-2">
+                  <h3 class="font-bold text-sm text-white">${escapeHTML(faq.q)}</h3>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHTML(faq.a)}</p>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="lg:col-span-6 glass-panel rounded-2xl p-6 sm:p-8">
+              <h2 class="text-lg font-bold text-white mb-4">Gửi Ticket Hỗ Trợ Kỹ Thuật</h2>
+              <form onsubmit="handleSupportTicketSubmit(event)" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">TÊN / USERNAME</label>
+                  <input id="tktName" type="text" required placeholder="Nhập tên của bạn" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">DISCORD TAG HOẶC EMAIL</label>
+                  <input id="tktContact" type="text" required placeholder="vd: user#0001 hoặc email@domain.com" class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white focus:outline-none focus:border-[#00D4FF]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-mono text-slate-400 mb-1">NỘI DUNG CẦN HỖ TRỢ</label>
+                  <textarea id="tktMessage" rows="4" required placeholder="Mô tả chi tiết vấn đề hoặc mã đơn hàng..." class="w-full px-4 py-3 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white focus:outline-none focus:border-[#00D4FF]"></textarea>
+                </div>
+                <button type="submit" class="btn-neon-primary w-full py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white">
+                  Gửi Yêu Cầu Hỗ Trợ
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function handleSupportTicketSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('tktName').value.trim();
+      const contact = document.getElementById('tktContact').value.trim();
+      const message = document.getElementById('tktMessage').value.trim();
+      const id = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+      state.tickets.unshift({ id, name, contact, message, status: 'OPEN', createdAt: new Date().toISOString() });
+      saveAll();
+      e.target.reset();
+      showToast('success', 'Đã gửi yêu cầu hỗ trợ', `Mã Ticket ${id} đã được tiếp nhận.`);
+    }
+
+    // ==========================================================================
+    // 7. MODALS (Discord Community & Admin Product Editor)
+    // ==========================================================================
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.add('hidden');
+    }
+
+    function openDiscordModal() {
+      const overlay = document.getElementById('modalOverlay');
+      const content = document.getElementById('modalContent');
+      content.innerHTML = `
+        <div class="max-w-md mx-auto bg-[#0f111a] border border-[#00D4FF]/40 rounded-3xl p-7 shadow-[0_0_50px_rgba(0,212,255,0.25)] relative animate-view">
+          <button onclick="closeModal()" class="absolute top-5 right-5 p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+          <div class="w-12 h-12 rounded-2xl bg-[#8B5CF6]/20 border border-[#8B5CF6]/40 flex items-center justify-center text-[#00D4FF] mb-4">
+            <i data-lucide="message-square" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-black text-white">SAVIOUR Official Discord</h3>
+          <p class="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Tham gia máy chủ Discord chính thức của SAVIOUR để nhận thông báo cập nhật phiên bản mới, hỗ trợ kích hoạt License Key và giao lưu cùng cộng đồng Developer.
+          </p>
+          <div class="mt-5 p-3.5 rounded-xl bg-[#08090D] border border-white/10 flex items-center justify-between gap-2">
+            <code class="text-xs font-mono text-[#00D4FF] truncate">${escapeHTML(state.config.discordUrl)}</code>
+            <button onclick="copyToClipboard('${escapeHTML(state.config.discordUrl)}', 'Link Discord')" class="px-3 py-1.5 rounded-lg bg-white/10 text-xs font-bold text-white shrink-0">Copy</button>
+          </div>
+          <div class="mt-6">
+            <a href="${escapeHTML(state.config.discordUrl)}" target="_blank" rel="noopener noreferrer" class="btn-neon-primary w-full py-3 rounded-xl text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+              <span>Mở Discord Ngay</span>
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      `;
+      overlay.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function openProductEditorModal(editProdId = null) {
+      const existing = editProdId ? state.products.find(p => p.id === editProdId) : null;
+      const overlay = document.getElementById('modalOverlay');
+      const content = document.getElementById('modalContent');
+
+      content.innerHTML = `
+        <div class="bg-[#0f111a] border border-[#8B5CF6]/40 rounded-3xl p-6 sm:p-8 shadow-2xl animate-view">
+          <div class="flex items-center justify-between pb-4 border-b border-white/10">
+            <h3 class="text-xl font-black text-white">${existing ? 'Chỉnh Sửa Sản Phẩm' : 'Thêm Sản Phẩm Mới'}</h3>
+            <button onclick="closeModal()" class="p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <form onsubmit="saveProductFromModal(event, '${existing ? existing.id : ''}')" class="mt-5 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-mono text-slate-400 mb-1">TÊN SẢN PHẨM</label>
+                <input id="edName" type="text" required value="${existing ? escapeHTML(existing.name) : ''}" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">DANH MỤC</label>
+                <select id="edCategory" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white">
+                  ${['TOOL', 'DISCORD BOT', 'SCRIPT', 'AUTOMATION', 'UTILITIES'].map(c => `<option value="${c}" ${existing && existing.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">NHÃN NỔI BẬT</label>
+                <select id="edBadge" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white">
+                  ${['NEW', 'HOT', 'BEST SELLER', 'NONE'].map(b => `<option value="${b}" ${existing && existing.badge === b ? 'selected' : ''}>${b}</option>`).join('')}
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">GIÁ BÁN (VND)</label>
+                <input id="edPrice" type="number" required min="0" step="1000" value="${existing ? existing.price : 290000}" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">PHIÊN BẢN</label>
+                <input id="edVersion" type="text" value="${existing ? escapeHTML(existing.version) : 'v1.0.0'}" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">TRẠNG THÁI</label>
+                <select id="edStatus" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white">
+                  <option value="ACTIVE" ${existing && existing.status === 'ACTIVE' ? 'selected' : ''}>ACTIVE</option>
+                  <option value="MAINTENANCE" ${existing && existing.status === 'MAINTENANCE' ? 'selected' : ''}>MAINTENANCE</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">ICON ARTWORK</label>
+                <select id="edArt" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white">
+                  ${['terminal', 'bot', 'automation', 'security', 'utility'].map(a => `<option value="${a}" ${existing && existing.artType === a ? 'selected' : ''}>${a.toUpperCase()}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono text-slate-400 mb-1">MÔ TẢ NGẮN</label>
+              <input id="edShortDesc" type="text" required value="${existing ? escapeHTML(existing.shortDesc) : ''}" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono text-slate-400 mb-1">MÔ TẢ CHI TIẾT</label>
+              <textarea id="edFullDesc" rows="2" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-sm text-white">${existing ? escapeHTML(existing.fullDesc) : ''}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">TÍNH NĂNG (MỖI DÒNG 1 Ý)</label>
+                <textarea id="edFeatures" rows="3" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-xs text-white">${existing ? escapeHTML(existing.features.join('\n')) : 'Hiệu năng cao, tối ưu tài nguyên\nBảo mật License Key HWID\nCập nhật trọn đời'}</textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-mono text-slate-400 mb-1">HƯỚNG DẪN SỬ DỤNG (MỖI BƯỚC 1 DÒNG)</label>
+                <textarea id="edGuide" rows="3" class="w-full px-4 py-2.5 rounded-xl bg-[#08090D] border border-white/10 text-xs text-white">${existing ? escapeHTML(existing.usageGuide.join('\n')) : 'Tải gói cài đặt sau khi thanh toán\nNhập License Key để kích hoạt'}</textarea>
+              </div>
+            </div>
+
+            <div class="pt-3 flex justify-end gap-3">
+              <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl bg-white/5 text-xs font-bold text-slate-300">Hủy</button>
+              <button type="submit" class="btn-neon-primary px-6 py-2.5 rounded-xl text-xs font-bold text-white uppercase">Lưu Sản Phẩm</button>
+            </div>
+          </form>
+        </div>
+      `;
+
+      overlay.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function saveProductFromModal(e, editId) {
+      e.preventDefault();
+      const name = document.getElementById('edName').value.trim();
+      const category = document.getElementById('edCategory').value;
+      const badge = document.getElementById('edBadge').value;
+      const price = Math.max(0, parseInt(document.getElementById('edPrice').value, 10) || 0);
+      const version = document.getElementById('edVersion').value.trim() || 'v1.0.0';
+      const status = document.getElementById('edStatus').value;
+      const artType = document.getElementById('edArt').value;
+      const shortDesc = document.getElementById('edShortDesc').value.trim();
+      const fullDesc = document.getElementById('edFullDesc').value.trim() || shortDesc;
+      const features = document.getElementById('edFeatures').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const usageGuide = document.getElementById('edGuide').value.split('\n').map(s => s.trim()).filter(Boolean);
+
+      if (editId) {
+        const idx = state.products.findIndex(p => p.id === editId);
+        if (idx !== -1) {
+          state.products[idx] = {
+            ...state.products[idx],
+            name, category, badge, price, version, status, artType, shortDesc, fullDesc,
+            features: features.length ? features : ['Tính năng chuẩn SAVIOUR'],
+            usageGuide: usageGuide.length ? usageGuide : ['Liên hệ Discord hỗ trợ']
+          };
+          showToast('success', 'Đã cập nhật sản phẩm', `Sản phẩm "${name}" đã được lưu.`);
+        }
+      } else {
+        state.products.unshift({
+          id: 'prod_' + Date.now(),
+          name, category, badge, price, version, status, artType, shortDesc, fullDesc,
+          features: features.length ? features : ['Tính năng chuẩn SAVIOUR'],
+          usageGuide: usageGuide.length ? usageGuide : ['Tải gói cài đặt và nhập License Key'],
+          techStack: ['SAVIOUR Core', 'Encrypted'],
+          changelog: `${version}: Phát hành chính thức trên nền tảng SAVIOUR.`
+        });
+        showToast('success', 'Thêm sản phẩm thành công', `Sản phẩm "${name}" đã hiển thị trên cửa hàng.`);
+      }
+
+      saveAll();
+      closeModal();
+      renderApp();
+    }
+
+    // ==========================================================================
+    // 8. MAIN APPLICATION RENDER ORCHESTRATOR
+    // ==========================================================================
+    function renderApp() {
+      updateHeaderUI();
+      const viewport = document.getElementById('appViewport');
+
+      switch (state.route) {
+        case 'PRODUCTS':
+          viewport.innerHTML = renderProductsView();
+          break;
+        case 'PRODUCT_DETAIL':
+          viewport.innerHTML = renderProductDetailView();
+          break;
+        case 'CHECKOUT':
+          viewport.innerHTML = renderCheckoutView();
+          break;
+        case 'ACCOUNT':
+          viewport.innerHTML = renderAccountView();
+          break;
+        case 'ADMIN':
+          viewport.innerHTML = renderAdminView();
+          break;
+        case 'SUPPORT':
+          viewport.innerHTML = renderSupportView();
+          break;
+        case 'HOME':
+        default:
+          viewport.innerHTML = renderHomeView();
+          break;
+      }
+
+      lucide.createIcons();
+    }
+
+    // ==========================================================================
+    // 9. LIGHTWEIGHT CYBERNETIC PARTICLE & GRID CANVAS ENGINE
+    // ==========================================================================
+    function initCyberCanvas() {
+      const canvas = document.getElementById('cyberCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const count = Math.min(42, Math.floor((width * height) / 34000));
+      const particles = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.8 + 0.8,
+        color: Math.random() > 0.5 ? 'rgba(139, 92, 246, 0.55)' : 'rgba(0, 212, 255, 0.5)'
+      }));
+
+      let gridOffset = 0;
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Subtle moving cyber grid
+        ctx.strokeStyle = 'rgba(139, 92, 246, 0.04)';
+        ctx.lineWidth = 1;
+        const step = 64;
+        gridOffset = (gridOffset + 0.14) % step;
+
+        for (let x = 0; x < width; x += step) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+        }
+        for (let y = gridOffset; y < height; y += step) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+
+        // Particles & connections
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 130) {
+              ctx.strokeStyle = `rgba(0, 212, 255, ${0.08 * (1 - dist / 130)})`;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(loop);
+      }
+
+      loop();
+    }
+
+    // Boot Application
+    window.addEventListener('DOMContentLoaded', () => {
+      initCyberCanvas();
+      renderApp();
+    });
+  </script>
+</body>
+</html>
+```
